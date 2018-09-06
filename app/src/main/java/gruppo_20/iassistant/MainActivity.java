@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -103,7 +105,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_associatedDevices) {
 
         } else if (id == R.id.nav_logOut){
-
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

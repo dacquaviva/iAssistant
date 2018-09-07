@@ -14,4 +14,15 @@
     <string name="logOut">Log-out</string>
     <string name="associatedDevices">Associated devices</string>
     <string name="menu">Menu</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Accedi</string>
+    <string name="action_sign_in_short">Accedi</string>
+    <string name="error_invalid_email">Indirizzo email non corretto</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">Password non corretta</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>

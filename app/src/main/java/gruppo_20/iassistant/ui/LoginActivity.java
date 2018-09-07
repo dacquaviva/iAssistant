@@ -1,4 +1,4 @@
-package gruppo_20.iassistant;
+package gruppo_20.iassistant.ui;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -23,6 +23,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import gruppo_20.iassistant.R;
 
 public class LoginActivity extends AppCompatActivity {
 

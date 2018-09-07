@@ -1,4 +1,4 @@
-package gruppo_20.iassistant;
+package gruppo_20.iassistant.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
+
+import gruppo_20.iassistant.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

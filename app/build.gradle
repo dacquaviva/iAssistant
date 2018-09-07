@@ -26,6 +26,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:11.8.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
     testImplementation 'junit:junit:4.12'
+    implementation 'com.applandeo:material-calendar-view:1.4.0'
 
 }
 

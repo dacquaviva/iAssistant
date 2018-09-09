@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,6 +10,8 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/appBar"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -18,16 +21,105 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/longCalendar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_below="@id/appBar"
+        android:animateLayoutChanges="true"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
-</android.support.design.widget.CoordinatorLayout>
+        <ImageButton
+            android:id="@+id/dataPrecedente"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:tint="@color/colorPrimary"
+            android:onClick="giornoPrecedente"
+            android:focusable="false"
+            app:srcCompat="@drawable/arrow_left" />
+
+        <TextView
+            android:id="@+id/dataText"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="31 Settembre 2018"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/dataSuccessiva"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:tint="@color/colorPrimary"
+            android:focusable="false"
+            android:onClick="giornoSuccessivo"
+            app:srcCompat="@drawable/arrow_right" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_below="@+id/longCalendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                android:id="@+id/slidingPanel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:isScrollContainer="true"
+                app:umanoClipPanel="true"
+                app:umanoPanelHeight="200dp"
+                app:umanoScrollableView="@layout/item_list"
+                app:umanoShadowHeight="6dp">
+
+                <com.applandeo.materialcalendarview.CalendarView
+                    android:id="@+id/main_calendarView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:animateLayoutChanges="true"
+                    app:abbreviationsLabelsColor="@color/colorPrimary"
+                    app:datePicker="false"
+                    app:headerColor="@android:color/white"
+                    app:headerLabelColor="@color/colorPrimary"
+                    app:selectionColor="@color/colorAccent"
+                    app:selectionLabelColor="@color/colorPrimaryDark"
+                    app:todayLabelColor="@color/colorPrimaryDark"
+                    app:type="one_day_picker" />
+
+                <FrameLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom">
+
+                    <include layout="@layout/item_list" />
+
+                </FrameLayout>
+
+            </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

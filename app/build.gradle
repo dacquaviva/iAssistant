@@ -12,6 +12,7 @@ android {
     }
     buildTypes {
         release {
+            android.defaultConfig.vectorDrawables.useSupportLibrary true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -27,6 +28,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:11.8.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.applandeo:material-calendar-view:1.4.0'
+    implementation 'com.sothree.slidinguppanel:library:3.3.1'
 
 }
 

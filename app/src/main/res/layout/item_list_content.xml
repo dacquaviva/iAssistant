@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/orario"
         android:layout_below="@+id/orario"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:lines="2"
         android:text="via Federico II di Svevia"
         android:textSize="16sp"
@@ -100,27 +100,29 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/mappButton"
+        android:scaleY="0.85"
+        android:scaleX="0.85"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/indirizzo"
         android:layout_alignEnd="@+id/stato"
-        android:backgroundTint="@color/colorMappButton"
         android:clickable="true"
         android:visibility="gone"
-        app:backgroundTint="@android:color/transparent"
+        app:backgroundTint="@color/colorMappButton"
         app:srcCompat="@drawable/ic_place_black_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/callButton"
+        android:scaleY="0.85"
+        android:scaleX="0.85"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/stato"
-        android:layout_below="@+id/indirizzo"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorCallButton"
+        android:layout_below="@+id/mappButton"
+        android:layout_marginTop="10dp"
         android:clickable="true"
         android:visibility="gone"
-        app:backgroundTint="@android:color/transparent"
+        app:backgroundTint="@color/colorCallButton"
         app:srcCompat="@drawable/ic_call_black_24dp" />
 
 </RelativeLayout>

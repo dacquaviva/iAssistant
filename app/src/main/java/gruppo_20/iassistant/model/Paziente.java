@@ -3,45 +3,19 @@ package gruppo_20.iassistant.model;
 import java.util.ArrayList;
 
 public class Paziente extends Persona {
-    private String luogoNascita;
-    private String indirizzo;
-    private int civico;
     private String medicoCurante;
     private ArrayList<String> note;
-    private CartellaClinica cartella;
+    private CartellaClinica cartellaClinica;
 
-    public Paziente(String nome, String cognome, String codice_fiscale, String data_nascita, String residenza, String telefono, String luogoNascita, String indirizzo, int civico, String medicoCurante, ArrayList<String> note, CartellaClinica cartella) {
-        super(nome, cognome, codice_fiscale, data_nascita, residenza, telefono);
-        this.luogoNascita = luogoNascita;
-        this.indirizzo = indirizzo;
-        this.civico = civico;
+    public Paziente(){
+        super();
+    }
+
+    public Paziente(String nome, String cognome, String codiceFiscale, String dataNascita, String luogoNascita, String cittaResidenza, String residenza, String telefono, String medicoCurante, ArrayList<String> note, CartellaClinica cartellaClinica) {
+        super(nome, cognome, codiceFiscale, dataNascita, luogoNascita, cittaResidenza, residenza, telefono);
         this.medicoCurante = medicoCurante;
         this.note = note;
-        this.cartella = cartella;
-    }
-
-    public String getLuogoNascita() {
-        return luogoNascita;
-    }
-
-    public void setLuogoNascita(String luogo_nascita) {
-        this.luogoNascita = luogo_nascita;
-    }
-
-    public String getIndirizzo() {
-        return indirizzo;
-    }
-
-    public void setIndirizzo(String indirizzo) {
-        this.indirizzo = indirizzo;
-    }
-
-    public int getCivico() {
-        return civico;
-    }
-
-    public void setCivico(int civico) {
-        this.civico = civico;
+        this.cartellaClinica = cartellaClinica;
     }
 
     public String getMedicoCurante() {
@@ -60,11 +34,11 @@ public class Paziente extends Persona {
         this.note = note;
     }
 
-    public CartellaClinica getCartella() {
-        return cartella;
+    public CartellaClinica getCartellaClinica() {
+        return cartellaClinica;
     }
 
-    public void setCartella(CartellaClinica cartella) {
-        this.cartella = cartella;
+    public void setCartellaClinica(CartellaClinica cartellaClinica) {
+        this.cartellaClinica = cartellaClinica;
     }
 }

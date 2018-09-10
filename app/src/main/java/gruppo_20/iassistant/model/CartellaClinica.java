@@ -3,18 +3,29 @@ package gruppo_20.iassistant.model;
 import java.util.ArrayList;
 
 public class CartellaClinica {
-    private ArrayList<String> periodo;
+    private String inizioTrattamento;
     private ArrayList<String> diagnosi;
     private ArrayList<String> allergie;
     private ArrayList<String> malattie;
     private ArrayList<String> trattFarmacologico;
 
-    public ArrayList<String> getPeriodo() {
-        return periodo;
+    public CartellaClinica() {
     }
 
-    public void setPeriodo(ArrayList<String> periodo) {
-        this.periodo = periodo;
+    public CartellaClinica(String inizioTrattamento, ArrayList<String> diagnosi, ArrayList<String> allergie, ArrayList<String> malattie, ArrayList<String> trattFarmacologico) {
+        this.inizioTrattamento = inizioTrattamento;
+        this.diagnosi = diagnosi;
+        this.allergie = allergie;
+        this.malattie = malattie;
+        this.trattFarmacologico = trattFarmacologico;
+    }
+
+    public String getInizioTrattamento() {
+        return inizioTrattamento;
+    }
+
+    public void setInizioTrattamento(String inizioTrattamento) {
+        this.inizioTrattamento = inizioTrattamento;
     }
 
     public ArrayList<String> getDiagnosi() {
@@ -47,5 +58,12 @@ public class CartellaClinica {
 
     public void setTrattFarmacologico(ArrayList<String> trattFarmacologico) {
         this.trattFarmacologico = trattFarmacologico;
+    }
+
+    public void addAllergie(String allergia) {
+        if (this.allergie == null){
+            this.allergie = new ArrayList<String>();
+        }
+        this.allergie.add(allergia);
     }
 }

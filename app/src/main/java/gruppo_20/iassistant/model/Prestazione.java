@@ -3,42 +3,56 @@ package gruppo_20.iassistant.model;
 import java.util.ArrayList;
 
 public class Prestazione {
-    private boolean isBlue;
-    private String prestazione;
-    private ArrayList<String> datiOpzionali;
+    private String nomePrestazione;
+    private String risultato;
+    private String motivazione;
+    private String datiOpzionali;
 
-    public Prestazione(String prestazione) {
-        this.isBlue = false;
-        this.prestazione = prestazione;
+    public Prestazione() {
     }
 
-    public Prestazione(boolean isBlue, String prestazione, ArrayList<String> datiOpzionali) {
-        this.isBlue = isBlue;
-        this.prestazione = prestazione;
+    public Prestazione(String nomePrestazione, String risultato, String motivazione, String datiOpzionali) {
+        this.nomePrestazione = nomePrestazione;
+        this.risultato = risultato;
+        this.motivazione = motivazione;
         this.datiOpzionali = datiOpzionali;
     }
 
-    public boolean isBlue() {
-        return isBlue;
+    public Prestazione(String nomePrestazione){
+        this.nomePrestazione = nomePrestazione;
     }
 
-    public void setBlue(boolean blue) {
-        isBlue = blue;
+    //Getter
+    public String getNomePrestazione() {
+        return nomePrestazione;
     }
 
-    public String getPrestazione() {
-        return prestazione;
+    public String getRisultato() {
+        return risultato;
     }
 
-    public void setPrestazione(String prestazione) {
-        this.prestazione = prestazione;
+    public String getMotivazione() {
+        return motivazione;
     }
 
-    public ArrayList<String> getDatiOpzionali() {
+    public String getDatiOpzionali() {
         return datiOpzionali;
     }
 
-    public void setDatiOpzionali(ArrayList<String> datiOpzionali) {
+    //Setter
+    public void setNomePrestazione(String nomePrestazione) {
+        this.nomePrestazione = nomePrestazione;
+    }
+
+    public void setRisultato(String risultato) {
+        this.risultato = risultato;
+    }
+
+    public void setMotivazione(String motivazione) {
+        this.motivazione = motivazione;
+    }
+
+    public void setDatiOpzionali(String datiOpzionali) {
         this.datiOpzionali = datiOpzionali;
     }
 }

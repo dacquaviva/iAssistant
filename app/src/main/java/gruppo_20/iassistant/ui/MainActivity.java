@@ -1,23 +1,10 @@
 package gruppo_20.iassistant.ui;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Intent;
-import android.graphics.Point;
-import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Display;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,13 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
 
@@ -47,7 +32,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
@@ -107,9 +91,10 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
+
         SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
         slidingPaneLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -122,15 +107,19 @@ public class MainActivity extends AppCompatActivity
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.longCalendar);
                 CalendarView calendar = (CalendarView) findViewById(R.id.main_calendarView);
 
-                if (newState == SlidingUpPanelLayout.PanelState.DRAGGING) {
-                    calendar.animate().alpha(0).setDuration(100);
+                if (newState == SlidingUpPanelLayout.PanelState.DRAGGING &&
+                        previousState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     linearLayout.setVisibility(View.VISIBLE);
-                    linearLayout.animate().alpha(1.0f);
-                } else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    linearLayout.animate().alpha(0.0f).setDuration(50);
+                }
+
+               else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     linearLayout.setVisibility(View.GONE);
-                    calendar.animate().alpha(1).setDuration(50);
                     aggiornaCalendarView();
+
+                } else if (newState == SlidingUpPanelLayout.PanelState.DRAGGING &&
+                        previousState == SlidingUpPanelLayout.PanelState.EXPANDED){
+                    linearLayout.setVisibility(View.GONE);
+                    ridimensionaPianificazioni(-1,MainActivity.this);
                 }
             }
         });
@@ -162,7 +151,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, final int position) {
             holder.mNomePaziente.setText(mValues.get(position).nomePaziente);
             switch (mValues.get(position).stato) {
                 case 0:
@@ -180,10 +169,11 @@ public class MainActivity extends AppCompatActivity
             }
             holder.mOrario.setText(mValues.get(position).orario);
             holder.mNPrestazioni.setText(mValues.get(position).nPrestazioni);
-
             holder.mFreccia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    ridimensionaPianificazioni(position , mParentActivity);
 
                     if (!holder.expand) {
                         holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
@@ -336,6 +326,23 @@ public class MainActivity extends AppCompatActivity
             calendarView.setDate(cal);
         } catch (OutOfDateRangeException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void ridimensionaPianificazioni (int position, MainActivity parent) {
+        RecyclerView recyclerView = (RecyclerView) parent.findViewById(R.id.item_list);
+        int size = recyclerView.getAdapter().getItemCount();
+        for (int i = 0; i < size; i++) {
+            SimpleItemRecyclerViewAdapter.ViewHolder specificHolder = ( SimpleItemRecyclerViewAdapter.ViewHolder)recyclerView.findViewHolderForAdapterPosition(i);
+            if (i != position && specificHolder.expand) {
+                specificHolder.mNPrestazioni.setVisibility(View.GONE);
+                specificHolder.mCall.setVisibility(View.GONE);
+                specificHolder.mMapp.setVisibility(View.GONE);
+                specificHolder.mIndirizzo.setVisibility(View.GONE);
+                specificHolder.mTelefono.setVisibility(View.GONE);
+                specificHolder.mFreccia.animate().rotation(specificHolder.mFreccia.getRotation() + 180);
+                specificHolder.expand = false;
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
     android:layout_marginBottom="8dp"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    app:layoutManager="LinearLayoutManager"
+    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
     tools:context=".ui.MainActivity"
 
     tools:listitem="@layout/item_list_content" />

@@ -39,10 +39,10 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:gravity="center"
-            android:tint="@color/colorPrimary"
-            android:onClick="giornoPrecedente"
             android:focusable="false"
+            android:gravity="center"
+            android:onClick="giornoPrecedente"
+            android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/arrow_left" />
 
         <TextView
@@ -99,6 +99,8 @@
                     android:animateLayoutChanges="true"
                     app:abbreviationsLabelsColor="@color/colorPrimary"
                     app:datePicker="false"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     app:headerColor="@android:color/white"
                     app:headerLabelColor="@color/colorPrimary"
                     app:selectionColor="@color/colorAccent"

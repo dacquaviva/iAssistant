@@ -61,9 +61,6 @@ public class MainActivity extends AppCompatActivity
     private int year;
     private int dayOfYear;
 
-    private static int relHeigh;
-    private static int calHeigh;
-
     private final static String[] MESI = {"Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
             "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"};
 
@@ -94,6 +91,7 @@ public class MainActivity extends AppCompatActivity
 
         try {
             calendarView.setDate(calendar);
+
         } catch (OutOfDateRangeException e) {
             e.printStackTrace();
         }
@@ -105,6 +103,7 @@ public class MainActivity extends AppCompatActivity
                 year = eventDay.getCalendar().get(Calendar.YEAR);
                 dayOfYear = eventDay.getCalendar().get(Calendar.DAY_OF_YEAR);
                 aggiornaDataText();
+                aggiornaCalendarView();
             }
         });
 
@@ -131,6 +130,7 @@ public class MainActivity extends AppCompatActivity
                     linearLayout.animate().alpha(0.0f).setDuration(50);
                     linearLayout.setVisibility(View.GONE);
                     calendar.animate().alpha(1).setDuration(50);
+                    aggiornaCalendarView();
                 }
             }
         });
@@ -326,6 +326,16 @@ public class MainActivity extends AppCompatActivity
     private void aggiornaDataText() {
         TextView dataText = (TextView) findViewById(R.id.dataText);
         dataText.setText(day + " " + MESI[month] + " " + year);
+    }
 
+    private void aggiornaCalendarView() {
+        CalendarView calendarView = (CalendarView) findViewById(R.id.main_calendarView);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_YEAR , dayOfYear);
+        try {
+            calendarView.setDate(cal);
+        } catch (OutOfDateRangeException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -43,7 +43,11 @@ import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
+import gruppo_20.iassistant.model.Paziente;
+
 import gruppo_20.iassistant.model.Visita;
+
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private final String idOperatore = FirebaseAuth.getInstance().getUid();
     private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
     private DatabaseReference dbRefDataVisita;
+    private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
 
     private final static String[] MESI = {"Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
             "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"};
@@ -102,8 +107,8 @@ public class MainActivity extends AppCompatActivity
 
         //Inizializzazione Lista delle prestazioni
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
-        assert recyclerView != null;
-        setupRecyclerView(recyclerView, Oggetti.ITEMS);
+        //assert recyclerView != null;
+        //setupRecyclerView(recyclerView, ,);
 
         SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
         slidingPaneLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -135,21 +140,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Riempimento dati della lista delle pianificazioni
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Oggetti> ogg) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, ogg));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Visita> visite, List<String> orari) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, visite, orari));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final MainActivity mParentActivity;
-        private final List<Oggetti> mValues;
+        private final List<Visita> mValuesViste;
+        private final List<String> mValuesOrari;
 
         /**
          * COSTRUTTORE
          */
-        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Oggetti> items) {
-            mValues = items;
+        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Visita> itemsVisite,List<String> itemsOrari) {
+            mValuesViste = itemsVisite;
+            mValuesOrari = itemsOrari ;
             mParentActivity = parent;
         }
 
@@ -162,23 +169,39 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            holder.mNomePaziente.setText(mValues.get(position).nomePaziente);
-            switch (mValues.get(position).stato) {
-                case 0:
+            //Lettura dei dati del paziente dal DB
+            dbRefPazienti.child(mValuesViste.get(position).getIdPaziente()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Paziente paziente = dataSnapshot.getValue(Paziente.class);
+                    holder.mNomePaziente.setText(paziente.getCognome() + " " + paziente.getNome());
+                    holder.mTelefono.setText(paziente.getTelefono());
+                    holder.mIndirizzo.setText(paziente.getResidenza());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            switch (mValuesViste.get(position).getStato()) {
+                case Pianificato:
                     holder.mStato.setText("Pianificata");
                     holder.mStatoImage.setImageResource(R.drawable.ic_book_black_24dp);
                     break;
-                case 1:
+                case InCorso:
                     holder.mStato.setText("In Corso");
                     holder.mStatoImage.setImageResource(R.drawable.ic_more_horiz_black_24dp);
                     break;
-                case 2:
+                case Terminato:
                     holder.mStato.setText("Effettuata");
                     holder.mStatoImage.setImageResource(R.drawable.ic_assignment_turned_in_black_24dp);
                     break;
             }
-            holder.mOrario.setText(mValues.get(position).orario);
-            holder.mNPrestazioni.setText(mValues.get(position).nPrestazioni);
+            holder.mOrario.setText(mValuesOrari.get(position));
+            holder.mNPrestazioni.setText(mValuesViste.get(position).getPrestazioni().size() + "prestazioni");
+
             holder.mFreccia.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -209,7 +232,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return mValuesViste.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
@@ -370,11 +393,16 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> orariList = new ArrayList<String>();
                 List<Visita> visiteList = new ArrayList<Visita>();
+                List<Paziente> pazientiList = new ArrayList<Paziente>();
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     orariList.add(data.getKey());
                     Visita visita = data.getValue(Visita.class);
                     visiteList.add(visita);
                 }
+
+                final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+                assert recyclerView != null;
+                setupRecyclerView(recyclerView, visiteList, orariList);
             }
 
             @Override

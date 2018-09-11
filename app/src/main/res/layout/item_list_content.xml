@@ -16,7 +16,6 @@
         android:layout_alignStart="@+id/nomePaziente"
         android:layout_below="@+id/nomePaziente"
         android:layout_marginBottom="13dp"
-        android:text="ore: 10.00"
         android:textSize="18sp" />
 
     <TextView
@@ -27,7 +26,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_toEndOf="@+id/freccia"
-        android:text="Bitonte Ernesto"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -38,8 +36,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:text="Pianificata" />
+        android:layout_marginTop="8dp" />
 
     <ImageView
         android:id="@+id/statoImage"
@@ -71,7 +68,6 @@
         android:layout_below="@+id/numero"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="20dp"
-        android:text="2 prestazioni"
         android:textSize="16sp"
         android:visibility="gone" />
 
@@ -83,7 +79,6 @@
         android:layout_below="@+id/orario"
         android:layout_marginTop="10dp"
         android:lines="2"
-        android:text="via Federico II di Svevia"
         android:textSize="16sp"
         android:visibility="gone" />
 
@@ -95,7 +90,6 @@
         android:layout_below="@+id/indirizzo"
         android:layout_marginTop="20dp"
         android:textSize="16sp"
-        android:text="080 945 6541"
         android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton

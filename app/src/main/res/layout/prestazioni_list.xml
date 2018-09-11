@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/prestazioni_list"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:contex=".ui.PianificazioniActivity"
-    tools:listitem="@layout/prestazione_content" />
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/paziente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/sansmedium"
+        android:text="Bitonte Ernesto"
+        android:textSize="28dp" />
+
+    <TextView
+        android:id="@+id/prestazioni"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/sansregular"
+        android:text="2 prestazioni da eseguire"
+        android:textSize="16dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/prestazioni_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:contex=".ui.PianificazioniActivity"
+        tools:listitem="@layout/prestazione_content"
+        />
+
+</LinearLayout>

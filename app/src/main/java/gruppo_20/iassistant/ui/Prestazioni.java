@@ -9,6 +9,9 @@ class Prestazioni {
         public boolean isEffettuata;
 
         public static final Prestazioni[] items = {new Prestazioni("scopare il paziente","1",true                                                                                                                                                                                                                                                                                              ),
+                new Prestazioni("Pippo Pippa","2",false),new Prestazioni("scopare il paziente","1",true                                                                                                                                                                                                                                                                                              ),
+                new Prestazioni("Pippo Pippa","2",false),new Prestazioni("scopare il paziente","1",true                                                                                                                                                                                                                                                                                              ),
+                new Prestazioni("Pippo Pippa","2",false),new Prestazioni("scopare il paziente","1",true                                                                                                                                                                                                                                                                                              ),
                 new Prestazioni("Pippo Pippa","2",false)};
 
         public static final List<Prestazioni> ITEMS = new ArrayList<>();

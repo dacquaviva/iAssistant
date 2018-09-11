@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <include
         layout="@layout/prestazioni_list"
         android:layout_width="match_parent"
@@ -16,7 +17,7 @@
         app:elevation="0dp"
         app:fabSize="normal"
         app:layout_anchor="@id/bottom_app_bar"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
+        app:srcCompat="@drawable/ic_assignment_black_24dp" />
 
     <android.support.design.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
@@ -24,6 +25,7 @@
         android:layout_height="@dimen/mtrl_bottomappbar_height"
         android:layout_gravity="bottom"
         app:backgroundTint="@color/colorPrimary"
+        app:hideOnScroll="true"
         app:fabAttached="true"
         app:fabAlignmentMode="end" />
 </android.support.design.widget.CoordinatorLayout>

@@ -29,7 +29,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.applandeo:material-calendar-view:1.4.0'
     implementation 'com.sothree.slidinguppanel:library:3.3.1'
-
 }
 
 apply plugin: 'com.google.gms.google-services'

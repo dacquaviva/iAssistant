@@ -187,10 +187,36 @@ public class MainActivity extends AppCompatActivity
             dbRefPazienti.child(mValuesViste.get(position).getIdPaziente()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Paziente paziente = dataSnapshot.getValue(Paziente.class);
+                    final Paziente paziente = dataSnapshot.getValue(Paziente.class);
                     holder.mNomePaziente.setText(paziente.getCognome() + " " + paziente.getNome());
                     holder.mTelefono.setText(paziente.getTelefono());
                     holder.mIndirizzo.setText(paziente.getResidenza());
+                    holder.mNomePaziente.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            view.getContext().startActivity(new Intent(view.getContext(), PrestazioniActivity.class));
+                        }
+                    });
+
+                    holder.mMapp.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String strUri = "geo:0,0?q=" + paziente.getResidenza() + " " + paziente.getCittaResidenza();
+                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
+                            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                            view.getContext().startActivity(intent);
+                        }
+                    });
+
+                    holder.mCall.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + paziente.getTelefono()));
+                            view.getContext().startActivity(intent);
+                        }
+                    });
+
                 }
 
                 @Override
@@ -199,6 +225,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
+            //settaggio dati sullo stato della visita
             switch (mValuesViste.get(position).getStato()) {
                 case Pianificato:
                     holder.mStato.setText("Pianificata");
@@ -243,31 +270,6 @@ public class MainActivity extends AppCompatActivity
                         holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
                         holder.expand = false;
                     }
-                }
-            });
-
-            holder.mNomePaziente.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    view.getContext().startActivity(new Intent(view.getContext(), PrestazioniActivity.class));
-                }
-            });
-
-            holder.mMapp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String strUri = "geo:0,0?q=via federico secondo di svevia 9, bisceglie, italia";
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
-                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                    view.getContext().startActivity(intent);
-                }
-            });
-            holder.mCall.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:0123456789"));
-                    view.getContext().startActivity(intent);
                 }
             });
         }
@@ -359,7 +361,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myAccount) {
 
         } else if (id == R.id.nav_associatedDevices) {
-
+            startActivity(new Intent(MainActivity.this, PrestazioniActivity.class));
+            finish();
         } else if (id == R.id.nav_logOut) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

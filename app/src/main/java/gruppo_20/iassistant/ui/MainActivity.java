@@ -29,16 +29,21 @@ import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
+import gruppo_20.iassistant.model.Visita;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -359,5 +364,23 @@ public class MainActivity extends AppCompatActivity
         String data = simpleData.format(new Date(year - 1900, month, day));
         dbRefDataVisita = dbRefOperatore.child("visite").child(data);
         aggiornaDataText();
+
+        dbRefDataVisita.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> orariList = new ArrayList<String>();
+                List<Visita> visiteList = new ArrayList<Visita>();
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    orariList.add(data.getKey());
+                    Visita visita = data.getValue(Visita.class);
+                    visiteList.add(visita);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

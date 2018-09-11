@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
+import gruppo_20.iassistant.model.Operatore;
 import gruppo_20.iassistant.model.Paziente;
 
 import gruppo_20.iassistant.model.Visita;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     // Variabili per Firebase
     private final String idOperatore = FirebaseAuth.getInstance().getUid();
+    private String eMailOperatore = FirebaseAuth.getInstance().getCurrentUser().getEmail();
     private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
     private DatabaseReference dbRefDataVisita;
     private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
@@ -85,6 +87,24 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerNavigationView = navigationView.getHeaderView(0);
+        final TextView eMailOperatoreTextView = (TextView) headerNavigationView.findViewById(R.id.nav_eMailTextView);
+        eMailOperatoreTextView.setText(eMailOperatore);
+
+        final TextView cognomeNomeOperatoreTextView = (TextView) headerNavigationView.findViewById(R.id.nav_cognomeNomeOperatoreTextView);
+        dbRefOperatore.child("anagrafica").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Operatore operatore = dataSnapshot.getValue(Operatore.class);
+                cognomeNomeOperatoreTextView.setText(operatore.getCognome() + " " + operatore.getNome());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(this);
 
         //inizializzato calendario alla data odierna
@@ -111,8 +131,6 @@ public class MainActivity extends AppCompatActivity
 
         //Inizializzazione Lista delle prestazioni
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
-        //assert recyclerView != null;
-        //setupRecyclerView(recyclerView, ,);
 
         SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
         slidingPaneLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -199,7 +217,9 @@ public class MainActivity extends AppCompatActivity
                     break;
             }
             holder.mOrario.setText(mValuesOrari.get(position));
-            holder.mNPrestazioni.setText(mValuesViste.get(position).getPrestazioni().size() + "prestazioni");
+            int size = mValuesViste.get(position).getPrestazioni().size();
+            String pluralsPrestazioni = mParentActivity.getResources().getQuantityString(R.plurals.prestazioni,size);
+            holder.mNPrestazioni.setText( size + " "  + pluralsPrestazioni);
 
             holder.mFreccia.setOnClickListener(new View.OnClickListener() {
 
@@ -345,7 +365,6 @@ public class MainActivity extends AppCompatActivity
         calendar.set(Calendar.DAY_OF_YEAR, --dayOfYear);
         aggiornaData(calendar);
     }
-
 
 
     public void giornoSuccessivo(View view) {

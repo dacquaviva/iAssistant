@@ -1,9 +1,13 @@
 package gruppo_20.iassistant.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -222,6 +226,16 @@ public class MainActivity extends AppCompatActivity
                         holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
                         holder.expand = false;
                     }
+                }
+            });
+
+            holder.mMapp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String strUri = "geo:0,0?q=via federico secondo di svevia 9, bisceglie, italia";
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
+                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    view.getContext().startActivity(intent);
                 }
             });
         }

@@ -70,9 +70,6 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference dbRefDataVisita;
     private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
 
-    private final static String[] MESI = {"Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
-            "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -382,7 +379,8 @@ public class MainActivity extends AppCompatActivity
     //aggiorna data quando il calendario è chiuso
     private void aggiornaDataText() {
         TextView dataText = (TextView) findViewById(R.id.dataText);
-        String data = day + " " + MESI[month] + " " + year;
+        String[] mese =  getResources().getStringArray(R.array.mesi);
+        String data = day + " " + mese[month] + " " + year;
         dataText.setText(data);
     }
 

@@ -3,7 +3,6 @@
     package="gruppo_20.iassistant">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo_iassistant"
@@ -24,12 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.PrestazioniActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.MisurazioniActivity"
-            android:label="@string/title_activity_misurazioni"></activity>
+        <activity android:name=".ui.PrestazioniActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

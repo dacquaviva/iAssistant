@@ -213,7 +213,9 @@ public class MainActivity extends AppCompatActivity
                     break;
             }
             holder.mOrario.setText(mValuesOrari.get(position));
-            holder.mNPrestazioni.setText(mValuesViste.get(position).getPrestazioni().size() + "prestazioni");
+            int size = mValuesViste.get(position).getPrestazioni().size();
+            String pluralsPrestazioni = mParentActivity.getResources().getQuantityString(R.plurals.prestazioni,size);
+            holder.mNPrestazioni.setText( size + " "  + pluralsPrestazioni);
 
             holder.mFreccia.setOnClickListener(new View.OnClickListener() {
 

@@ -25,4 +25,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <plurals name="prestazioni">
+        <item quantity="one">prestazione</item>
+        <item quantity="other">prestazioni</item>
+    </plurals>
 </resources>

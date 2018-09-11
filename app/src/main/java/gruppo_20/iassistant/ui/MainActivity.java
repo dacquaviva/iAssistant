@@ -249,6 +249,13 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
+            holder.mNomePaziente.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    view.getContext().startActivity(new Intent(view.getContext(), PrestazioniActivity.class));
+                }
+            });
+
             holder.mMapp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -347,8 +354,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myAccount) {
 
         } else if (id == R.id.nav_associatedDevices) {
-            startActivity(new Intent(MainActivity.this, PrestazioniActivity.class));
-            finish();
+
         } else if (id == R.id.nav_logOut) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

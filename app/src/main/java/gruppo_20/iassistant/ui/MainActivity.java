@@ -262,6 +262,14 @@ public class MainActivity extends AppCompatActivity
                     view.getContext().startActivity(intent);
                 }
             });
+            holder.mCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:0123456789"));
+                    view.getContext().startActivity(intent);
+                }
+            });
         }
 
         @Override

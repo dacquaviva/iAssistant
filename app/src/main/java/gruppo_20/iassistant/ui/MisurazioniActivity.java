@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,9 +26,13 @@ public class MisurazioniActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Toast.makeText(MisurazioniActivity.this,"ciao",Toast.LENGTH_LONG).show();
-                    LayoutInflater inflater = LayoutInflater.from(MisurazioniActivity.this);
-                    ConstraintLayout v = (ConstraintLayout) inflater.inflate(R.layout.bluetooth,null,false);
+                    View nav = findViewById(R.id.navigation);
+                    ViewGroup parent = (ViewGroup) nav.getParent();
+                    int index = parent.indexOfChild(nav);
+                    //View beforeNav = findViewById(R.Layout.)
+                    //parent.removeView();
+                    nav = getLayoutInflater().inflate(R.layout.bluetooth, parent, false);
+                    parent.addView(nav, index);
                     return true;
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.title_notifications);
@@ -42,7 +47,6 @@ public class MisurazioniActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_misurazioni);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }

@@ -23,9 +23,11 @@
         android:id="@+id/bottom_app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/mtrl_bottomappbar_height"
+        android:paddingTop="5dp"
         android:layout_gravity="bottom"
         app:backgroundTint="@color/colorPrimary"
         app:hideOnScroll="true"
         app:fabAttached="true"
-        app:fabAlignmentMode="end" />
+        app:fabAlignmentMode="center" />
+
 </android.support.design.widget.CoordinatorLayout>

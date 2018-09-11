@@ -116,24 +116,19 @@ public class MainActivity extends AppCompatActivity
             public void onPanelSlide(View panel, float slideOffset) {
 
             }
-
+         //animazione dello Srolling Panel
             @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState,
+                                            SlidingUpPanelLayout.PanelState newState) {
+
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.longCalendar);
 
-                if (newState == SlidingUpPanelLayout.PanelState.DRAGGING &&
-                        previousState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED ) {
                     linearLayout.setVisibility(View.VISIBLE);
-                }
-
-               else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                } else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     linearLayout.setVisibility(View.GONE);
                     aggiornaCalendarView();
-
-                } else if (newState == SlidingUpPanelLayout.PanelState.DRAGGING &&
-                        previousState == SlidingUpPanelLayout.PanelState.EXPANDED){
-                    linearLayout.setVisibility(View.GONE);
-                    ridimensionaPianificazioni(-1,MainActivity.this);
+                    ridimensionaPianificazioni(-1, MainActivity.this);
                 }
             }
         });
@@ -207,6 +202,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
 
+                    //metodo per chiudere tutte le pianificazioni aperte quando si scrolla verso il basso
                     ridimensionaPianificazioni(position , mParentActivity);
 
                     if (!holder.expand) {

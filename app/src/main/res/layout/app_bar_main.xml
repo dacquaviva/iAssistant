@@ -52,7 +52,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="31 Settembre 2018"
+            android:fontFamily="@font/sansregular"
+            android:text=""
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
 

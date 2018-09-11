@@ -53,13 +53,6 @@
         android:orientation="vertical"
         android:visibility="invisible">
 
-        <ProgressBar
-            android:id="@+id/login_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone" />
-
         <ScrollView
             android:id="@+id/login_form"
             android:layout_width="match_parent"
@@ -76,7 +69,7 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginLeft="24dp"
                     android:layout_marginRight="24dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -85,17 +78,21 @@
                         android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/sansregular"
                         android:hint="@string/prompt_email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:fontFamily="@font/sansregular"/>
+                        android:paddingBottom="16dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="16dp"
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:layout_marginLeft="24dp"
                     android:layout_marginRight="24dp"
                     android:layout_marginTop="8dp"
@@ -105,14 +102,14 @@
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/sansregular"
                         android:hint="@string/prompt_password"
                         android:imeActionId="6"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:fontFamily="@font/sansregular"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 

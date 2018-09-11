@@ -29,9 +29,13 @@ import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
@@ -45,6 +49,11 @@ public class MainActivity extends AppCompatActivity
     private int year;
     private int dayOfYear;
 
+    // Variabili per Firebase
+    private final String idOperatore = FirebaseAuth.getInstance().getUid();
+    private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
+    private DatabaseReference dbRefDataVisita;
+
     private final static String[] MESI = {"Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio",
             "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"};
 
@@ -55,9 +64,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Inizializzata Navigation View
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -66,12 +75,10 @@ public class MainActivity extends AppCompatActivity
 
         //inizializzato calendario alla data odierna
         calendarView = (CalendarView) findViewById(R.id.main_calendarView);
-        Calendar calendar = Calendar.getInstance();
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
-        year = calendar.get(Calendar.YEAR);
+        final Calendar calendar = Calendar.getInstance();
+        aggiornaData(calendar);
         dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-        aggiornaDataText();
+
 
         try {
             calendarView.setDate(calendar);
@@ -82,18 +89,16 @@ public class MainActivity extends AppCompatActivity
         calendarView.setOnDayClickListener(new OnDayClickListener() {
             @Override
             public void onDayClick(EventDay eventDay) {
-                day = eventDay.getCalendar().get(Calendar.DAY_OF_MONTH);
-                month = eventDay.getCalendar().get(Calendar.MONTH);
-                year = eventDay.getCalendar().get(Calendar.YEAR);
+                aggiornaData(eventDay.getCalendar());
                 dayOfYear = eventDay.getCalendar().get(Calendar.DAY_OF_YEAR);
-                aggiornaDataText();
                 aggiornaCalendarView();
             }
         });
 
+        //Inizializzazione Lista delle prestazioni
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
         assert recyclerView != null;
-        setupRecyclerView(recyclerView);
+        setupRecyclerView(recyclerView, Oggetti.ITEMS);
 
         SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
         slidingPaneLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -105,7 +110,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.longCalendar);
-                CalendarView calendar = (CalendarView) findViewById(R.id.main_calendarView);
 
                 if (newState == SlidingUpPanelLayout.PanelState.DRAGGING &&
                         previousState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
@@ -125,8 +129,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, Oggetti.ITEMS));
+    //Riempimento dati della lista delle pianificazioni
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Oggetti> ogg) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, ogg));
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity
             holder.mOrario.setText(mValues.get(position).orario);
             holder.mNPrestazioni.setText(mValues.get(position).nPrestazioni);
             holder.mFreccia.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
 
@@ -299,24 +305,22 @@ public class MainActivity extends AppCompatActivity
     public void giornoPrecedente(View view) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_YEAR, --dayOfYear);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
-        year = calendar.get(Calendar.YEAR);
-        aggiornaDataText();
+        aggiornaData(calendar);
     }
+
+
 
     public void giornoSuccessivo(View view) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_YEAR, ++dayOfYear);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
-        year = calendar.get(Calendar.YEAR);
-        aggiornaDataText();
+        aggiornaData(calendar);
     }
 
+    //aggiorna data quando il calendario è chiuso
     private void aggiornaDataText() {
         TextView dataText = (TextView) findViewById(R.id.dataText);
-        dataText.setText(day + " " + MESI[month] + " " + year);
+        String data = day + " " + MESI[month] + " " + year;
+        dataText.setText(data);
     }
 
     private void aggiornaCalendarView() {
@@ -345,5 +349,15 @@ public class MainActivity extends AppCompatActivity
                 specificHolder.expand = false;
             }
         }
+    }
+
+    private void aggiornaData(Calendar calendar) {
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+        SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
+        String data = simpleData.format(new Date(year - 1900, month, day));
+        dbRefDataVisita = dbRefOperatore.child("visite").child(data);
+        aggiornaDataText();
     }
 }

@@ -12,7 +12,7 @@
         android:layout_height="80dp">
 
         <Button
-            android:id="@+id/numeroPrestazioni"
+            android:id="@+id/numeroPrestazione"
             android:layout_width="49dp"
             android:layout_height="45dp"
             android:layout_marginBottom="8dp"
@@ -35,7 +35,7 @@
             android:text="TextView"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/numeroPrestazioni"
+            app:layout_constraintStart_toEndOf="@+id/numeroPrestazione"
             app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.design.widget.FloatingActionButton

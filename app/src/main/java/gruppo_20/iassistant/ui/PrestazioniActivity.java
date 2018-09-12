@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
+import android.support.design.chip.Chip;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -76,10 +78,8 @@ public class PrestazioniActivity extends AppCompatActivity {
                 assert prestazioniList != null;
                 setupRecyclerView(prestazioniList, visita.getPrestazioni());
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
@@ -87,7 +87,6 @@ public class PrestazioniActivity extends AppCompatActivity {
 
         // metodo per animare il FAB
         prestazioniList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -114,8 +113,6 @@ public class PrestazioniActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     //definizione del metodo per il riempimento della lista
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni) { //@NonNull specifica che il metodo non potrà mai restituire null
@@ -147,20 +144,34 @@ public class PrestazioniActivity extends AppCompatActivity {
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
             holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
             holder.mNumPrestazione.setText("" + (position + 1));
-            holder.mBluetooth.setOnClickListener(new View.OnClickListener() {
+            holder.mNomePrestazione.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    apriDialog(holder.blueDialog,"bluetooth",v.getContext(), R.layout.bluetooth);
+                    holder.modalitaInserimentoDialog = new Dialog(v.getContext());
+                    holder.modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    holder.modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
+                    holder.modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
+                    Chip cBlu = (Chip) holder.modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+                    Chip cMan = (Chip) holder.modalitaInserimentoDialog.findViewById(R.id.chipManuale);
+
+                    cBlu.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            holder.modalitaInserimentoDialog.cancel();
+                            apriDialog(holder.blueDialog,"bluetooth",v.getContext(), R.layout.bluetooth);
+                        }
+                    });
+
+                    cMan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            holder.modalitaInserimentoDialog.cancel();
+                            apriDialog(holder.inserimentoDialog,"Inserimento Dati",v.getContext(), R.layout.inserimento_dati);
+                        }
+                    });
+                    holder.modalitaInserimentoDialog.show();
                 }
             });
-
-            holder.mManuale.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    apriDialog(holder.inserimentoDialog,"Inserimento Dati",v.getContext(), R.layout.inserimento_dati);
-                }
-            });
-
         }
 
         public void apriDialog(AlertDialog.Builder MyDialog, String title, Context c, int layout){
@@ -177,52 +188,46 @@ public class PrestazioniActivity extends AppCompatActivity {
                         apriDialog(new AlertDialog.Builder(d.getContext()),"Risultato misurazione",d.getContext(), R.layout.inserimento_dati_bluetooth);
                     }
                 });
-            }else{
-                MyDialog.setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                MyDialog.setNegativeButton("Riesegui", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-
             }
+               if(layout==R.layout.inserimento_dati || layout==R.layout.inserimento_dati_bluetooth) {
+                   MyDialog.setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                       }
+                   });
+                   if((R.layout.inserimento_dati == layout)){
+                       MyDialog.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
 
-
-
+                           }
+                       });
+                   } else {
+                       MyDialog.setNegativeButton("Riesegui", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                           }
+                       });
+                   }
+               }
             MyDialog.show();
-
-
         }
 
         @Override
         public int getItemCount() {
             return mValues.size();
         }
-
         class ViewHolder extends RecyclerView.ViewHolder {
             final Button mNumPrestazione;
             final TextView mNomePrestazione;
-            final FloatingActionButton mBluetooth;
-            final FloatingActionButton mManuale;
             AlertDialog.Builder blueDialog ;
             AlertDialog.Builder inserimentoDialog;
-
-
+            Dialog modalitaInserimentoDialog;
 
             ViewHolder(View view) {
                 super(view);
                 mNumPrestazione = (Button) view.findViewById(R.id.numeroPrestazione);
                 mNomePrestazione = (TextView) view.findViewById(R.id.nomePrestazione);
-                mBluetooth = (FloatingActionButton) view.findViewById(R.id.bluetoothFab);
-                mManuale = (FloatingActionButton) view.findViewById(R.id.manualFab);
             }
         }
     }

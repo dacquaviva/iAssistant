@@ -37,40 +37,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/numeroPrestazione"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/bluetoothFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:scaleX="0.85"
-            android:scaleY="0.85"
-            app:backgroundTint="@color/defaultColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/nomePrestazione"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_bluetooth_black_24dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/manualFab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:scaleX="0.85"
-            android:scaleY="0.85"
-            app:backgroundTint="@android:color/holo_orange_dark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bluetoothFab"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
     </android.support.constraint.ConstraintLayout>
 
     <View

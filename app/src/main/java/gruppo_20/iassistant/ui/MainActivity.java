@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity
         /**
          * COSTRUTTORE
          */
-        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Visita> itemsVisite,List<String> itemsOrari) {
+        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Visita> itemsVisite, List<String> itemsOrari) {
             mValuesViste = itemsVisite;
             mValuesOrari = itemsOrari ;
             mParentActivity = parent;
@@ -194,7 +194,13 @@ public class MainActivity extends AppCompatActivity
                     holder.mNomePaziente.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            view.getContext().startActivity(new Intent(view.getContext(), PrestazioniActivity.class));
+                            Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
+                            intent.putExtra("cognomeNomePaziente",paziente.getCognome() + " " + paziente.getNome());
+                            SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
+                            String dataToString = simpleData.format(new Date(mParentActivity.year - 1900, mParentActivity.month, mParentActivity.day));
+                            intent.putExtra("dataVisita",dataToString);
+                            intent.putExtra("orarioVisita",mValuesOrari.get(position));
+                            view.getContext().startActivity(intent);
                         }
                     });
 

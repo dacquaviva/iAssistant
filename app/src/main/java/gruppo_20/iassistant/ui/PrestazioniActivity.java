@@ -36,12 +36,16 @@ public class PrestazioniActivity extends AppCompatActivity {
     private static RecyclerView prestazioniList;
     private static android.support.design.bottomappbar.BottomAppBar but;
 
+    private String dataVisita;
+    private String orarioVisita;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prestazioni);
-
+        dataVisita = getIntent().getExtras().getString("dataVisita");
+        orarioVisita = getIntent().getExtras().getString("orarioVisita");
         prestazioniList = (RecyclerView) findViewById(R.id.prestazioni_list);
 
         //chiamata del metodo per il riempimento della lista
@@ -73,7 +77,6 @@ public class PrestazioniActivity extends AppCompatActivity {
         but.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                startActivity(new Intent(PrestazioniActivity.this, MainActivity.class));
                 finish();
                 return false;
             }

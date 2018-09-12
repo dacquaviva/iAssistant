@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/nomePrestazione"
-            android:layout_width="match_parent"
+            android:layout_width="174dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="16dp"
@@ -31,6 +31,27 @@
             android:lines="1"
             android:text="TextView"
             android:textSize="16sp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/bluetoothFab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
+            tools:layout_width="wrap_content" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/manualFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_edit_black_24dp"
+            tools:layout_marginLeft="16dp" />
     </LinearLayout>
 
     <View

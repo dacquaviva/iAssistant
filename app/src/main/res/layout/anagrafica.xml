@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Nome"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_nome"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Cognome"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_cognome"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_nome" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Codice Fiscale"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_codiceFiscale"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_cognome" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Luogo di Nascita"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_luogoNascita"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_codiceFiscale" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Data di Nascita"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_dataNascita"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_luogoNascita" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Indirizzo"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_indirizzo"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/floatingActionButton2"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_dataNascita" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Città di Residenza"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_cittaResidenza"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="fill_vertical"
+            android:background="@drawable/bordo_textview"
+
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_indirizzo" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Num. Telefono"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_telefono"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/floatingActionButton3"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView22"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_cittaResidenza" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Medico Curante"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_medicoCurante"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bordo_textview"
+
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_telefono" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.45" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bordo_textview"
+
+            android:clickable="true"
+            app:backgroundTint="@color/colorCallButton"
+            app:layout_constraintBottom_toBottomOf="@+id/anagraficaPaziente_indirizzo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/anagraficaPaziente_indirizzo"
+            app:srcCompat="@drawable/ic_call_black_24dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:background="@drawable/bordo_textview"
+
+            app:backgroundTint="@color/colorMappButton"
+            app:layout_constraintBottom_toBottomOf="@+id/anagraficaPaziente_telefono"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/anagraficaPaziente_telefono"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_location_on_black_24dp" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

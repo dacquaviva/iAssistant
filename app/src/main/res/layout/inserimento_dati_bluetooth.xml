@@ -25,7 +25,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="80dp"
         android:fontFamily="@font/sansregular"
-        android:text="TextView"
+        android:text="64"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />

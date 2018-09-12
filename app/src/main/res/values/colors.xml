@@ -3,6 +3,6 @@
     <color name="colorPrimary">#DD4537</color>
     <color name="colorPrimaryDark">#BE362B</color>
     <color name="colorAccent">#37CFDD</color>
-    <color name="colorCallButton">#43A047</color>
-    <color name="colorMappButton">#E53935</color>
+    <color name="colorCallButton">#43a047</color>
+    <color name="colorMappButton">#e53935</color>
 </resources>

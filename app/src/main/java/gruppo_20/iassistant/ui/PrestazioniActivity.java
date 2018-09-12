@@ -26,9 +26,20 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
+import gruppo_20.iassistant.model.Prestazione;
+import gruppo_20.iassistant.model.Visita;
 
 public class PrestazioniActivity extends AppCompatActivity {
 
@@ -38,20 +49,51 @@ public class PrestazioniActivity extends AppCompatActivity {
 
     private String dataVisita;
     private String orarioVisita;
+    private String cognomeNomePaziente;
+
+    private DatabaseReference dbRefVisita;
+    private String idOperatore = FirebaseAuth.getInstance().getUid();;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prestazioni);
+
         dataVisita = getIntent().getExtras().getString("dataVisita");
         orarioVisita = getIntent().getExtras().getString("orarioVisita");
+        cognomeNomePaziente = getIntent().getExtras().getString("cognomeNomePaziente");
+        dbRefVisita = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore).child("visite").child(dataVisita).child(orarioVisita);
         prestazioniList = (RecyclerView) findViewById(R.id.prestazioni_list);
 
-        //chiamata del metodo per il riempimento della lista
+        //Riempimento Header con i dati del paziente
+        TextView nomePaziente = (TextView)  findViewById(R.id.headPrestazioni_nomePazienteTextView);
+        nomePaziente.setText(cognomeNomePaziente);
+        final TextView numPrestazioniDaSvolgere = (TextView)  findViewById(R.id.headPrestazioni_numPrestazioniTextView);
+
+        //Riempimento reciclerView con i dati delle prestazioni del DB
+        dbRefVisita.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Visita visita = dataSnapshot.getValue(Visita.class);
+                int prestazioniDaSvolgere = visita.contaPrestazioniDaSvolgere();
+                if(prestazioniDaSvolgere == 0){
+                    numPrestazioniDaSvolgere.setText(getResources().getString(R.string.nessunaPrestazione) + " da svolgere");
+                }else {
+                    numPrestazioniDaSvolgere.setText(getResources().getQuantityString(R.plurals.prestazioni, prestazioniDaSvolgere, prestazioniDaSvolgere) + " da svolgere");
+                }
+
+                assert prestazioniList != null;
+                setupRecyclerView(prestazioniList, visita.getPrestazioni());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         but = (android.support.design.bottomappbar.BottomAppBar) findViewById(R.id.bottom_app_bar);
-        assert prestazioniList != null;
-        setupRecyclerView(prestazioniList);
 
         // metodo per animare il FAB
         prestazioniList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -86,20 +128,20 @@ public class PrestazioniActivity extends AppCompatActivity {
 
 
     //definizione del metodo per il riempimento della lista
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, Prestazioni.ITEMS));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, itemPrestazioni));
     }
 
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final PrestazioniActivity mParentActivity;
-        private final List<Prestazioni> mValues;
+        private final List<Prestazione> mValues;
 
         /**
          * COSTRUTTORE
          */
-        SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazioni> items) {
+        SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazione> items) {
             mValues = items;
             mParentActivity = parent;
         }
@@ -113,8 +155,8 @@ public class PrestazioniActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
-            holder.mNomePrestazione.setText(mValues.get(position).nomePrestazione);
-            holder.mNumPrestazione.setText(mValues.get(position).numeroPrestazione);
+            holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
+            holder.mNumPrestazione.setText("" + (position + 1));
             holder.mBluetooth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -151,7 +193,7 @@ public class PrestazioniActivity extends AppCompatActivity {
 
             ViewHolder(View view) {
                 super(view);
-                mNumPrestazione = (Button) view.findViewById(R.id.numeroPrestazioni);
+                mNumPrestazione = (Button) view.findViewById(R.id.numeroPrestazione);
                 mNomePrestazione = (TextView) view.findViewById(R.id.nomePrestazione);
                 mBluetooth = (FloatingActionButton) view.findViewById(R.id.bluetoothFab);
                 mManuale = (FloatingActionButton) view.findViewById(R.id.manualFab);

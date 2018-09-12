@@ -248,8 +248,13 @@ public class MainActivity extends AppCompatActivity
             }
             holder.mOrario.setText(mValuesOrari.get(position));
             int size = mValuesViste.get(position).getPrestazioni().size();
-            String pluralsPrestazioni = mParentActivity.getResources().getQuantityString(R.plurals.prestazioni,size);
-            holder.mNPrestazioni.setText( size + " "  + pluralsPrestazioni);
+            String pluralsPrestazioni;
+            if(size == 0){
+                pluralsPrestazioni = mParentActivity.getResources().getString(R.string.nessunaPrestazione);
+            } else{
+                pluralsPrestazioni = mParentActivity.getResources().getQuantityString(R.plurals.prestazioni,size,size);
+            }
+            holder.mNPrestazioni.setText(pluralsPrestazioni);
 
             holder.mFreccia.setOnClickListener(new View.OnClickListener() {
 

@@ -25,10 +25,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="nessunaPrestazione">Nessuna prestazione</string>
 
     <plurals name="prestazioni">
-        <item quantity="one">prestazione</item>
-        <item quantity="other">prestazioni</item>
+        <item quantity="one">%d prestazione</item>
+        <item quantity="other">%d prestazioni</item>
     </plurals>
 
     <string-array name="mesi">

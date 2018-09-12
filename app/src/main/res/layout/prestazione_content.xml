@@ -13,7 +13,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/numeroPrestazioni"
+            android:id="@+id/numeroPrestazione"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"

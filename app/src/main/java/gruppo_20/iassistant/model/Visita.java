@@ -39,4 +39,14 @@ public class Visita {
     public void setStato(Stato stato) {
         this.stato = stato;
     }
+
+    public int contaPrestazioniDaSvolgere(){
+        int count =0;
+        for (Prestazione prestazione : this.prestazioni){
+            if(prestazione.getRisultato() == null) {
+                count++;
+            }
+        }
+        return count;
+    }
 }

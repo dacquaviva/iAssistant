@@ -9,24 +9,22 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/paziente"
+        android:id="@+id/headPrestazioni_nomePazienteTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/sansmedium"
-        android:text="Bitonte Ernesto"
         android:textSize="28dp" />
 
     <TextView
-        android:id="@+id/prestazioni"
+        android:id="@+id/headPrestazioni_numPrestazioniTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:fontFamily="@font/sansregular"
-        android:text="2 prestazioni da eseguire"
         android:textSize="16dp" />
 
     <android.support.v7.widget.RecyclerView

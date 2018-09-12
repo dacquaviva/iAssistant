@@ -7,52 +7,71 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+        android:layout_height="80dp">
 
         <Button
             android:id="@+id/numeroPrestazioni"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/oval_button" />
+            android:layout_width="49dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/oval_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/nomePrestazione"
             android:layout_width="174dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/sansregular"
             android:lines="1"
             android:text="TextView"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/numeroPrestazioni"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/bluetoothFab"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
             android:clickable="true"
-            app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
-            tools:layout_width="wrap_content" />
+            android:scaleX="0.85"
+            android:scaleY="0.85"
+            app:backgroundTint="@color/defaultColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/nomePrestazione"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_bluetooth_black_24dp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/manualFab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:clickable="true"
-            app:srcCompat="@drawable/ic_edit_black_24dp"
-            tools:layout_marginLeft="16dp" />
-    </LinearLayout>
+            android:scaleX="0.85"
+            android:scaleY="0.85"
+            app:backgroundTint="@android:color/holo_orange_dark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bluetoothFab"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
+    </android.support.constraint.ConstraintLayout>
 
     <View
         android:id="@+id/divider2"

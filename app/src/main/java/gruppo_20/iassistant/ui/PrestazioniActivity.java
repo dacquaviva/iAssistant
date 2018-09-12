@@ -1,6 +1,8 @@
 package gruppo_20.iassistant.ui;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -115,17 +117,52 @@ public class PrestazioniActivity extends AppCompatActivity {
             holder.mBluetooth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    apriDialog(holder.blueDialog,"bluetooth",v, R.layout.bluetooth);
+                    apriDialog(holder.blueDialog,"bluetooth",v.getContext(), R.layout.bluetooth);
+                }
+            });
+
+            holder.mManuale.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    apriDialog(holder.inserimentoDialog,"Inserimento Dati",v.getContext(), R.layout.inserimento_dati);
                 }
             });
 
         }
 
-        public void apriDialog(Dialog MyDialog, String title,View v, int layout){
-            MyDialog = new Dialog(v.getContext());
-            MyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            MyDialog.setContentView(layout);
+        public void apriDialog(AlertDialog.Builder MyDialog, String title, Context c, int layout){
+            MyDialog = new AlertDialog.Builder(c);
             MyDialog.setTitle(title);
+            MyDialog.setView(layout);
+
+            if(R.layout.bluetooth == layout){
+                MyDialog.setPositiveButton("Connetti", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Dialog d = (Dialog) dialog;
+                        // Apri l'altro dialog quando hai ricevuto il dato
+                        apriDialog(new AlertDialog.Builder(d.getContext()),"Risultato misurazione",d.getContext(), R.layout.inserimento_dati_bluetooth);
+                    }
+                });
+            }else{
+                MyDialog.setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                MyDialog.setNegativeButton("Riesegui", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+
+            }
+
+
 
             MyDialog.show();
 
@@ -142,8 +179,9 @@ public class PrestazioniActivity extends AppCompatActivity {
             final TextView mNomePrestazione;
             final FloatingActionButton mBluetooth;
             final FloatingActionButton mManuale;
-            Dialog blueDialog;
-            Dialog manualDialog;
+            AlertDialog.Builder blueDialog ;
+            AlertDialog.Builder inserimentoDialog;
+
 
 
             ViewHolder(View view) {

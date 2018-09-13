@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
@@ -45,26 +43,25 @@ import gruppo_20.iassistant.model.Paziente;
 import gruppo_20.iassistant.model.Visita;
 
 
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private int day;
-    private int month;
-    private int year;
-    private int dayOfYear;
+
+    private final Calendar calendarIstanceOfToday = Calendar.getInstance();;
+
 
     // Variabili per Firebase
     private final String idOperatore = FirebaseAuth.getInstance().getUid();
     private String eMailOperatore = FirebaseAuth.getInstance().getCurrentUser().getEmail();
     private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
-    private DatabaseReference dbRefDataVisita;
+    private final DatabaseReference dbRefVisite = dbRefOperatore.child("visite");
     private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -96,41 +93,16 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //inizializzato calendario alla data odierna
-        final Calendar calendar = Calendar.getInstance();
-        aggiornaData(calendar);
-        dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+        Calendar calendar = Calendar.getInstance();
+        String data = setCalendarToString(calendarIstanceOfToday);
 
+        aggiornaVisiteSingolaGiornata(data);
 
-
-        //Inizializzazione Lista delle prestazioni
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
-
-        /*SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
-        slidingPaneLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-         //animazione dello Srolling Panel
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState,
-                                            SlidingUpPanelLayout.PanelState newState) {
-
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.longCalendar);
-
-                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED ) {
-                    linearLayout.setVisibility(View.VISIBLE);
-                } else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    linearLayout.setVisibility(View.GONE);
-                    ridimensionaPianificazioni(-1, MainActivity.this);
-                }
-            }
-        });*/
     }
 
     //Riempimento dati della lista delle pianificazioni
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Visita> visite, List<String> orari) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, visite, orari));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Visita> visite, List<String> orari, String dataToString) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, visite, orari, dataToString));
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -139,14 +111,17 @@ public class MainActivity extends AppCompatActivity
         private final MainActivity mParentActivity;
         private final List<Visita> mValuesViste;
         private final List<String> mValuesOrari;
+        private final String mStringData;
+
 
         /**
          * COSTRUTTORE
          */
-        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Visita> itemsVisite, List<String> itemsOrari) {
+        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Visita> itemsVisite, List<String> itemsOrari, String stringData) {
             mValuesViste = itemsVisite;
             mValuesOrari = itemsOrari ;
             mParentActivity = parent;
+            mStringData = stringData;
         }
 
         @Override
@@ -172,8 +147,7 @@ public class MainActivity extends AppCompatActivity
                             Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
                             intent.putExtra("cognomeNomePaziente",paziente.getCognome() + " " + paziente.getNome());
                             SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
-                            String dataToString = simpleData.format(new Date(mParentActivity.year - 1900, mParentActivity.month, mParentActivity.day));
-                            intent.putExtra("dataVisita",dataToString);
+                            intent.putExtra("dataVisita", mStringData);
                             intent.putExtra("orarioVisita",mValuesOrari.get(position));
                             view.getContext().startActivity(intent);
                         }
@@ -360,26 +334,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void giornoPrecedente(View view) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_YEAR, --dayOfYear);
-        aggiornaData(calendar);
-    }
-
-
-    public void giornoSuccessivo(View view) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_YEAR, ++dayOfYear);
-        aggiornaData(calendar);
-    }
-
-    //aggiorna data quando il calendario è chiuso
-    private void aggiornaDataText() {
-        TextView dataText = (TextView) findViewById(R.id.dataText);
-        String[] mese =  getResources().getStringArray(R.array.mesi);
-        String data = day + " " + mese[month] + " " + year;
-        dataText.setText(data);
-    }
 
 
     private static void ridimensionaPianificazioni (int position, MainActivity parent) {
@@ -399,16 +353,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void aggiornaData(Calendar calendar) {
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = calendar.get(Calendar.MONTH);
-        year = calendar.get(Calendar.YEAR);
+    private String setCalendarToString(Calendar calendar) {
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
         SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
-        String data = simpleData.format(new Date(year - 1900, month, day));
-        dbRefDataVisita = dbRefOperatore.child("visite").child(data);
-        aggiornaDataText();
+        calendar.set(year, month , day);
+        return simpleData.format(calendar.getTime());
+    }
 
-        dbRefDataVisita.addValueEventListener(new ValueEventListener() {
+    //
+    private void aggiornaVisiteSingolaGiornata(final String dataVisita){
+        dbRefVisite.child(dataVisita).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> orariList = new ArrayList<String>();
@@ -422,7 +378,8 @@ public class MainActivity extends AppCompatActivity
 
                 final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
                 assert recyclerView != null;
-                setupRecyclerView(recyclerView, visiteList, orariList);
+                setupRecyclerView(recyclerView, visiteList, orariList, dataVisita);
+
             }
 
             @Override

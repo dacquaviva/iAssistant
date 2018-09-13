@@ -33,14 +33,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.MisurazioniActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.AnagraficaPazienteActivity"
-            android:label="@string/title_activity_anagrafica_paziente"></activity>
+        <activity android:name=".ui.AnagraficaActivity"></activity>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package gruppo_20.iassistant.ui;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.chip.Chip;
@@ -50,15 +51,25 @@ public class PrestazioniActivity extends AppCompatActivity {
     private static Dialog modalitaInserimentoDialog;
     private static ListView listaDispositivi;
     private static Dialog inserimentoBlueBialog;
+    private static FloatingActionButton anagrafica;
 
     private DatabaseReference dbRefVisita;
-    private String idOperatore = FirebaseAuth.getInstance().getUid();;
+    private String idOperatore = FirebaseAuth.getInstance().getUid();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prestazioni);
+
+        anagrafica = findViewById(R.id.fab_anagrafica);
+        anagrafica.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PrestazioniActivity.this, AnagraficaActivity.class));
+                finish();
+            }
+        });
 
         dataVisita = getIntent().getExtras().getString("dataVisita");
         orarioVisita = getIntent().getExtras().getString("orarioVisita");

@@ -1,16 +1,10 @@
 package gruppo_20.iassistant.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.chip.Chip;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +42,14 @@ public class PrestazioniActivity extends AppCompatActivity {
     private String dataVisita;
     private String orarioVisita;
     private String cognomeNomePaziente;
+
+    private static Chip cBlu;
+    private static Chip cMan;
+    private static Dialog blueDialogList;
+    private static Dialog inserimentoDialog;
+    private static Dialog modalitaInserimentoDialog;
+    private static ListView listaDispositivi;
+    private static Dialog inserimentoBlueBialog;
 
     private DatabaseReference dbRefVisita;
     private String idOperatore = FirebaseAuth.getInstance().getUid();;
@@ -128,9 +133,7 @@ public class PrestazioniActivity extends AppCompatActivity {
         private final PrestazioniActivity mParentActivity;
         private final List<Prestazione> mValues;
 
-        /**
-         * COSTRUTTORE
-         */
+
         SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazione> items) {
             mValues = items;
             mParentActivity = parent;
@@ -145,91 +148,107 @@ public class PrestazioniActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
+            holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
+
             if(mValues.get(position).isEffectuated()){
                 holder.mNumPrestazione.setBackgroundResource(R.drawable.oval_button_green);
             }
-            holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
             holder.mNumPrestazione.setText("" + (position + 1));
+
             holder.mNomePrestazione.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.modalitaInserimentoDialog = new Dialog(v.getContext());
-                    holder.modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    holder.modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
-                    holder.modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
-                    Chip cBlu = (Chip) holder.modalitaInserimentoDialog.findViewById(R.id.chipBlu);
-                    Chip cMan = (Chip) holder.modalitaInserimentoDialog.findViewById(R.id.chipManuale);
+                    modalitaInserimentoDialog = new Dialog(v.getContext());
+                    modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
+                    modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
+
+                    cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+                    cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
 
                     cBlu.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            holder.modalitaInserimentoDialog.cancel();
-                            apriDialog(holder.blueDialog,"bluetooth",v.getContext(), R.layout.bluetooth);
+                            modalitaInserimentoDialog.cancel();
+                            blueDialogList = new Dialog(v.getContext());
+                            blueDialogList.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            blueDialogList.setTitle("Bluetooth");
+                            blueDialogList.setContentView(R.layout.bluetooth);
+                            listaDispositivi = (ListView) blueDialogList.findViewById(R.id.lista_dispositivi);
+                            String[] dati = {"uno","due"};
+                            ArrayAdapter<String> ciao = new ArrayAdapter<String>(v.getContext(),android.R.layout.simple_list_item_1,dati);
+                            listaDispositivi.setAdapter(ciao);
+                            listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    blueDialogList.cancel();
+                                    inserimentoBlueBialog = new Dialog(view.getContext());
+                                    inserimentoBlueBialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    inserimentoBlueBialog.setTitle("Bluetooth");
+                                    inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
+
+                                    Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                                    Button riesegui = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
+
+                                    conferma.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            //gestire conferma dati inseriti dall'operatore
+                                        }
+                                    });
+                                    riesegui.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            //gestire annulla
+                                        }
+                                    });
+                                    inserimentoBlueBialog.show();
+                                }
+                            });
+
+                            blueDialogList.show();
                         }
                     });
 
                     cMan.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            holder.modalitaInserimentoDialog.cancel();
-                            apriDialog(holder.inserimentoDialog,"Inserimento Dati",v.getContext(), R.layout.inserimento_dati);
+                            modalitaInserimentoDialog.cancel();
+                            inserimentoDialog = new Dialog(v.getContext());
+                            inserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            inserimentoDialog.setTitle("Inserisci Risultato");
+                            inserimentoDialog.setContentView(R.layout.inserimento_dati);
+
+                            Button conferma = (Button) inserimentoDialog.findViewById(R.id.conferma_button_manual);
+                            Button annulla = (Button) inserimentoDialog.findViewById(R.id.button_annulla);
+
+                            conferma.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //gestire conferma dati inseriti dall'operatore
+                                }
+                            });
+                            annulla.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    //gestire annulla
+                                }
+                            });
+                            inserimentoDialog.show();
                         }
                     });
-                    holder.modalitaInserimentoDialog.show();
+                    modalitaInserimentoDialog.show();
                 }
             });
-        }
-
-        public void apriDialog(AlertDialog.Builder MyDialog, String title, Context c, int layout){
-            MyDialog = new AlertDialog.Builder(c);
-            MyDialog.setTitle(title);
-            MyDialog.setView(layout);
-
-            if(R.layout.bluetooth == layout){
-                MyDialog.setPositiveButton("Connetti", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Dialog d = (Dialog) dialog;
-                        // Apri l'altro dialog quando hai ricevuto il dato
-                        apriDialog(new AlertDialog.Builder(d.getContext()),"Risultato misurazione",d.getContext(), R.layout.inserimento_dati_bluetooth);
-                    }
-                });
-            }
-               if(layout==R.layout.inserimento_dati || layout==R.layout.inserimento_dati_bluetooth) {
-                   MyDialog.setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                       }
-                   });
-                   if((R.layout.inserimento_dati == layout)){
-                       MyDialog.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-
-                           }
-                       });
-                   } else {
-                       MyDialog.setNegativeButton("Riesegui", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialog, int which) {
-                           }
-                       });
-                   }
-               }
-            MyDialog.show();
         }
 
         @Override
         public int getItemCount() {
             return mValues.size();
         }
-
         class ViewHolder extends RecyclerView.ViewHolder {
             final Button mNumPrestazione;
             final TextView mNomePrestazione;
-            AlertDialog.Builder blueDialog ;
-            AlertDialog.Builder inserimentoDialog;
-            Dialog modalitaInserimentoDialog;
 
             ViewHolder(View view) {
                 super(view);

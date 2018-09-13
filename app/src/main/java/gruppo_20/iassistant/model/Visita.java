@@ -43,7 +43,7 @@ public class Visita {
     public int contaPrestazioniDaSvolgere(){
         int count =0;
         for (Prestazione prestazione : this.prestazioni){
-            if(prestazione.getRisultato() == null) {
+            if(! prestazione.isEffectuated()) {
                 count++;
             }
         }

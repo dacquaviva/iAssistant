@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.chip.Chip;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -142,6 +145,9 @@ public class PrestazioniActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
+            if(mValues.get(position).isEffectuated()){
+                holder.mNumPrestazione.setBackgroundResource(R.drawable.oval_button_green);
+            }
             holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
             holder.mNumPrestazione.setText("" + (position + 1));
             holder.mNomePrestazione.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +223,7 @@ public class PrestazioniActivity extends AppCompatActivity {
         public int getItemCount() {
             return mValues.size();
         }
+
         class ViewHolder extends RecyclerView.ViewHolder {
             final Button mNumPrestazione;
             final TextView mNomePrestazione;

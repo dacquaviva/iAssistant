@@ -55,4 +55,10 @@ public class Prestazione {
     public void setDatiOpzionali(String datiOpzionali) {
         this.datiOpzionali = datiOpzionali;
     }
+
+    public boolean isEffectuated(){
+        if (this.risultato != null){
+            return true;
+        } else return false;
+    }
 }

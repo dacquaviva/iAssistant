@@ -1,8 +1,6 @@
 package gruppo_20.iassistant.ui;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,23 +20,17 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.applandeo.materialcalendarview.CalendarView;
 
-
-import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
-import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +49,6 @@ import gruppo_20.iassistant.model.Visita;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private CalendarView calendarView;
     private int day;
     private int month;
     private int year;
@@ -105,31 +96,16 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //inizializzato calendario alla data odierna
-        calendarView = (CalendarView) findViewById(R.id.main_calendarView);
         final Calendar calendar = Calendar.getInstance();
         aggiornaData(calendar);
         dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
 
 
-        try {
-            calendarView.setDate(calendar);
-
-        } catch (OutOfDateRangeException e) {
-            e.printStackTrace();
-        }
-        calendarView.setOnDayClickListener(new OnDayClickListener() {
-            @Override
-            public void onDayClick(EventDay eventDay) {
-                aggiornaData(eventDay.getCalendar());
-                dayOfYear = eventDay.getCalendar().get(Calendar.DAY_OF_YEAR);
-                aggiornaCalendarView();
-            }
-        });
 
         //Inizializzazione Lista delle prestazioni
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
 
-        SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
+        /*SlidingUpPanelLayout slidingPaneLayout = (SlidingUpPanelLayout) findViewById(R.id.slidingPanel);
         slidingPaneLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -146,11 +122,10 @@ public class MainActivity extends AppCompatActivity
                     linearLayout.setVisibility(View.VISIBLE);
                 } else if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     linearLayout.setVisibility(View.GONE);
-                    aggiornaCalendarView();
                     ridimensionaPianificazioni(-1, MainActivity.this);
                 }
             }
-        });
+        });*/
     }
 
     //Riempimento dati della lista delle pianificazioni
@@ -262,7 +237,7 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(View v) {
 
                     //metodo per chiudere tutte le pianificazioni aperte quando si scrolla verso il basso
-                    ridimensionaPianificazioni(position , mParentActivity);
+                    //ridimensionaPianificazioni(position , mParentActivity);
 
                     if (!holder.expand) {
                         holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
@@ -406,16 +381,6 @@ public class MainActivity extends AppCompatActivity
         dataText.setText(data);
     }
 
-    private void aggiornaCalendarView() {
-        CalendarView calendarView = (CalendarView) findViewById(R.id.main_calendarView);
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_YEAR , dayOfYear);
-        try {
-            calendarView.setDate(cal);
-        } catch (OutOfDateRangeException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static void ridimensionaPianificazioni (int position, MainActivity parent) {
         RecyclerView recyclerView = (RecyclerView) parent.findViewById(R.id.item_list);

@@ -81,45 +81,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.sothree.slidinguppanel.SlidingUpPanelLayout
+            <android.support.constraint.ConstraintLayout
                 android:id="@+id/slidingPanel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="bottom"
-                android:isScrollContainer="true"
-                app:umanoClipPanel="true"
-                app:umanoPanelHeight="200dp"
-                app:umanoScrollableView="@layout/item_list"
-                app:umanoShadowHeight="6dp">
+                android:isScrollContainer="true" />
 
-                <com.applandeo.materialcalendarview.CalendarView
-                    android:id="@+id/main_calendarView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:animateLayoutChanges="true"
-                    app:abbreviationsLabelsColor="@color/colorPrimary"
-                    app:datePicker="false"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    app:headerColor="@android:color/white"
-                    app:headerLabelColor="@color/colorPrimary"
-                    app:selectionColor="@color/colorAccent"
-                    app:selectionLabelColor="@color/colorPrimaryDark"
-                    app:todayLabelColor="@color/colorPrimaryDark"
-                    app:type="one_day_picker" />
 
-                <FrameLayout
-                    android:id="@+id/frameLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="bottom">
 
-                    <include layout="@layout/item_list" />
 
-                </FrameLayout>
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom">
 
-            </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+                <include layout="@layout/item_list" />
+
+            </FrameLayout>
 
         </android.support.design.widget.CoordinatorLayout>
 

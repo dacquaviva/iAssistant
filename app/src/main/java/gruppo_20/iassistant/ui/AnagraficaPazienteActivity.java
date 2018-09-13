@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import gruppo_20.iassistant.R;
+
 public class AnagraficaPazienteActivity extends AppCompatActivity {
 
     private TextView mTextMessage;

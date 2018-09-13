@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity
                         public void onClick(View view) {
                             Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
                             intent.putExtra("cognomeNomePaziente",paziente.getCognome() + " " + paziente.getNome());
-                            SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
+                            intent.putExtra("idPaziente",mValuesViste.get(position).getIdPaziente());
                             intent.putExtra("dataVisita", mStringData);
                             intent.putExtra("orarioVisita",mValuesOrari.get(position));
                             view.getContext().startActivity(intent);

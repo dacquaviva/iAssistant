@@ -43,6 +43,7 @@ public class PrestazioniActivity extends AppCompatActivity {
     private String dataVisita;
     private String orarioVisita;
     private String cognomeNomePaziente;
+    private String idPaziente;
 
     private static Chip cBlu;
     private static Chip cMan;
@@ -66,14 +67,16 @@ public class PrestazioniActivity extends AppCompatActivity {
         anagrafica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PrestazioniActivity.this, AnagraficaActivity.class));
-                finish();
+                Intent intent = new Intent(PrestazioniActivity.this, AnagraficaActivity.class);
+                intent.putExtra("idPaziente", idPaziente);
+                startActivity(intent);
             }
         });
 
         dataVisita = getIntent().getExtras().getString("dataVisita");
         orarioVisita = getIntent().getExtras().getString("orarioVisita");
         cognomeNomePaziente = getIntent().getExtras().getString("cognomeNomePaziente");
+        idPaziente = getIntent().getExtras().getString("idPaziente");
         dbRefVisita = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore).child("visite").child(dataVisita).child(orarioVisita);
         prestazioniList = (RecyclerView) findViewById(R.id.prestazioni_list);
 

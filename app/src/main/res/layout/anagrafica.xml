@@ -346,7 +346,7 @@
             android:fontFamily="@font/sansregular"
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
-            android:text="Periodo di raccolta dati"
+            android:text="Inizio raccolta dati:"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -354,7 +354,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cartella_clinica" />
 
         <TextView
-            android:id="@+id/anagraficaPaziente_periodoRaccolta"
+            android:id="@+id/anagraficaPaziente_inizioRaccoltaDati"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:gravity="fill_vertical"
@@ -372,7 +372,7 @@
             android:layout_height="60dp"
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
-            android:text="Diagnosi"
+            android:text="Diagnosi:"
             android:textSize="18sp"
             android:fontFamily="@font/sansregular"
             android:textStyle="bold"
@@ -386,7 +386,7 @@
             android:layout_height="60dp"
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
-            android:text="Allergie"
+            android:text="Allergie:"
             android:textSize="18sp"
             android:fontFamily="@font/sansregular"
             android:textStyle="bold"
@@ -400,7 +400,7 @@
             android:layout_height="60dp"
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
-            android:text="Trattamento Farmacologico"
+            android:text="Trattamento Farmacologico:"
             android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="@font/sansregular"
@@ -414,7 +414,7 @@
             android:layout_height="60dp"
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
-            android:text="Malattie Concomitanti"
+            android:text="Malattie Concomitanti:"
             android:textSize="18sp"
             android:fontFamily="@font/sansregular"
             android:textStyle="bold"
@@ -433,7 +433,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView12"
-            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_periodoRaccolta" />
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_inizioRaccoltaDati" />
 
         <TextView
             android:id="@+id/anagraficaPaziente_Allergie"
@@ -462,7 +462,7 @@
             app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_Allergie" />
 
         <TextView
-            android:id="@+id/anagraficaPaziente_Trattamento"
+            android:id="@+id/anagraficaPaziente_TrattamentoFarmacologico"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:fontFamily="@font/sansregular"

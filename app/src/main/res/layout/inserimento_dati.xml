@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/datoInserito"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/noteInserite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
@@ -57,7 +57,7 @@
         android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/datoInserito" />
 
     <Button
         android:id="@+id/conferma_button_manual"
@@ -68,7 +68,7 @@
         android:text="Conferma"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/noteInserite" />
 
     <Button
         android:id="@+id/button_annulla"
@@ -80,6 +80,6 @@
         android:text="Annulla"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toStartOf="@+id/conferma_button_manual"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintTop_toBottomOf="@+id/noteInserite" />
 
 </android.support.constraint.ConstraintLayout>

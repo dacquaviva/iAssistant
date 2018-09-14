@@ -256,7 +256,7 @@
             app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_cittaResidenza" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/valorOttenutoBlu"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:background="@drawable/bordo_textview"
@@ -283,7 +283,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/valorOttenutoBlu"
             app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_telefono" />
 
         <android.support.constraint.Guideline

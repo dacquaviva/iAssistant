@@ -317,6 +317,20 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_messages) {
 
         } else if (id == R.id.nav_helpline) {
+            FirebaseDatabase.getInstance().getReference().child("helpline").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String numHelpline = dataSnapshot.getValue(String.class);
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + numHelpline));
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         } else if (id == R.id.nav_myAccount) {
 

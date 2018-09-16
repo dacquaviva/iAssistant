@@ -10,6 +10,7 @@
     android:background="@drawable/border">
 
     <TextView
+        android:fontFamily="@font/sansregular"
         android:id="@+id/orario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,6 +20,7 @@
         android:textSize="18sp" />
 
     <TextView
+        android:fontFamily="@font/sansregular"
         android:id="@+id/nomePaziente"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
@@ -30,6 +32,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:fontFamily="@font/sansregular"
         android:id="@+id/stato"
         android:layout_width="74dp"
         android:layout_height="wrap_content"
@@ -65,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/orario"
+        android:fontFamily="@font/sansregular"
         android:layout_below="@+id/numero"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="20dp"
@@ -76,6 +80,7 @@
         android:layout_width="164dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/orario"
+        android:fontFamily="@font/sansregular"
         android:layout_below="@+id/orario"
         android:layout_marginTop="10dp"
         android:lines="2"
@@ -87,6 +92,7 @@
         android:layout_width="164dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/orario"
+        android:fontFamily="@font/sansregular"
         android:layout_below="@+id/indirizzo"
         android:layout_marginTop="20dp"
         android:textSize="16sp"

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -45,6 +46,7 @@ import java.util.UUID;
 
 import gruppo_20.iassistant.R;
 import gruppo_20.iassistant.model.Prestazione;
+import gruppo_20.iassistant.model.Stato;
 import gruppo_20.iassistant.model.Visita;
 
 public class PrestazioniActivity extends AppCompatActivity {
@@ -72,7 +74,7 @@ public class PrestazioniActivity extends AppCompatActivity {
 
     //Button listen,send, listDevices;
     private static TextView stato,valorOttenutoBlu;
-
+    private static Chip terminaPianificazione;
     private static BluetoothAdapter bluetoothAdapter;
     private static BluetoothDevice[] btArray;
     private static ArrayList<String> dati;
@@ -120,9 +122,6 @@ public class PrestazioniActivity extends AppCompatActivity {
                         valorOttenutoBlu.setText(tempMsg);
                         dati.add(tempMsg);
                     }
-
-
-
                     break;
             }
             return true;
@@ -160,6 +159,15 @@ public class PrestazioniActivity extends AppCompatActivity {
             startActivityForResult(enableIntent,REQUEST_ENABLE_BLUETOOTH);
         }
 
+        //Gestione del tasto di termina Pianificazione
+        terminaPianificazione = (Chip) findViewById(R.id.termina_pianificazione);
+        terminaPianificazione.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO ANGELO
+            }
+        });
+
         //Riempimento Header con i dati del paziente
         TextView nomePaziente = (TextView)  findViewById(R.id.headPrestazioni_nomePazienteTextView);
         nomePaziente.setText(cognomeNomePaziente);
@@ -173,8 +181,11 @@ public class PrestazioniActivity extends AppCompatActivity {
                 int prestazioniDaSvolgere = visita.contaPrestazioniDaSvolgere();
                 if(prestazioniDaSvolgere == 0){
                     numPrestazioniDaSvolgere.setText(getResources().getString(R.string.nessunaPrestazione) + " da svolgere");
+                    if (visita.getStato() == Stato.InCorso) {
+                        terminaPianificazione.setVisibility(View.VISIBLE);
+                    }
                 }else {
-                    numPrestazioniDaSvolgere.setText(getResources().getQuantityString(R.plurals.prestazioni, prestazioniDaSvolgere, prestazioniDaSvolgere) + " da svolgere");
+                    numPrestazioniDaSvolgere.setText("Ancora " + getResources().getQuantityString(R.plurals.prestazioni, prestazioniDaSvolgere, prestazioniDaSvolgere) + " da svolgere");
                 }
 
                 assert prestazioniList != null;
@@ -245,6 +256,7 @@ public class PrestazioniActivity extends AppCompatActivity {
             holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
 
             if(mValues.get(position).isEffectuated()){
+                holder.mNumPrestazione.setTextColor(Color.WHITE);
                 holder.mNumPrestazione.setBackgroundResource(R.drawable.oval_button_green);
             }
             holder.mNumPrestazione.setText("" + (position + 1));
@@ -391,7 +403,6 @@ public class PrestazioniActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private static class ClientClass extends Thread
     {

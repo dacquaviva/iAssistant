@@ -117,6 +117,9 @@ public class PrestazioniActivity extends AppCompatActivity {
                     byte[] readBuff= (byte[]) msg.obj;
                     String tempMsg=new String(readBuff,0,msg.arg1);
                     if (tempMsg.equals("-0101")) {
+                        Button confermaBtn = (Button)  inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                        confermaBtn.setTextColor(Color.rgb(55,207,221));
+                        confermaBtn.setClickable(true);
                         dato_arrivato = true;
                     }else{
                         valorOttenutoBlu.setText(tempMsg);
@@ -312,7 +315,9 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
                                         stato = (TextView) blueDialogList.findViewById(R.id.stato);
 
-                                        final Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                                         Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                                         conferma.setTextColor(Color.GRAY);
+                                         conferma.setClickable(false);
                                         Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
                                         valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
                                         EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);

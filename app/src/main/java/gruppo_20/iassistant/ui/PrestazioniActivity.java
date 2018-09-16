@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -78,6 +79,7 @@ public class PrestazioniActivity extends AppCompatActivity {
 
 
     private static SendReceive sendReceive;
+    private static ClientClass clientClass;
 
     static final int STATE_LISTENING = 1;
     static final int STATE_CONNECTING=2;
@@ -89,6 +91,7 @@ public class PrestazioniActivity extends AppCompatActivity {
 
     private static final String APP_NAME = "iAssistant";
     private static final UUID MY_UUID=UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66");
+    private static boolean dato_arrivato = false;
 
     private static Handler handler=new Handler(new Handler.Callback() {
         @Override
@@ -111,9 +114,15 @@ public class PrestazioniActivity extends AppCompatActivity {
                 case STATE_MESSAGE_RECEIVED:
                     byte[] readBuff= (byte[]) msg.obj;
                     String tempMsg=new String(readBuff,0,msg.arg1);
-                    dati = new ArrayList<>();
-                    valorOttenutoBlu.setText(tempMsg);
-                    dati.add(tempMsg);
+                    if (tempMsg.equals("-0101")) {
+                        dato_arrivato = true;
+                    }else{
+                        valorOttenutoBlu.setText(tempMsg);
+                        dati.add(tempMsg);
+                    }
+
+
+
                     break;
             }
             return true;
@@ -279,7 +288,7 @@ public class PrestazioniActivity extends AppCompatActivity {
 
                             listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                                     stato = (TextView) blueDialogList.findViewById(R.id.stato);
                                     stato.setText("Connessione");
 
@@ -291,7 +300,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
                                         stato = (TextView) blueDialogList.findViewById(R.id.stato);
 
-                                        Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                                        final Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
                                         Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
                                         valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
                                         EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);
@@ -300,7 +309,16 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         conferma.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                             // salvare nel database L'arrayList chiamao dati,e l'EditText note inserite controllare se e' vuoto
+                                                if(dato_arrivato == true){
+                                                    dato_arrivato = false;
+                                                    Toast.makeText(v.getContext(),"dati salvati correttamente",Toast.LENGTH_LONG).show();
+                                                    clientClass.cancel();
+
+                                                    inserimentoBlueBialog.cancel();
+                                                }else{
+                                                    Toast.makeText(v.getContext(),"dati in ricezione, ATTENDERE",Toast.LENGTH_LONG).show();
+                                                }
+
                                             }
                                         });
                                         annulla.setOnClickListener(new View.OnClickListener() {
@@ -309,9 +327,9 @@ public class PrestazioniActivity extends AppCompatActivity {
                                                 inserimentoBlueBialog.cancel();
                                             }
                                         });
-                                        ClientClass clientClass=new ClientClass(btArray[position]);
+                                        clientClass=new ClientClass(btArray[position]);
                                         clientClass.start();
-
+                                        dati = new ArrayList<>();
                                         stato.setText("Connesione");
                                         inserimentoBlueBialog.show();
 
@@ -407,6 +425,13 @@ public class PrestazioniActivity extends AppCompatActivity {
                 Message message=Message.obtain();
                 message.what=STATE_CONNECTION_FAILED;
                 handler.sendMessage(message);
+            }
+        }
+
+        public void cancel() {
+            try {
+                socket.close();
+            } catch (IOException e) {
             }
         }
     }

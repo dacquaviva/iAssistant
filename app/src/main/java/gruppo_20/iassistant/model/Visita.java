@@ -6,6 +6,15 @@ public class Visita {
     private String idPaziente;
     private ArrayList <Prestazione> prestazioni;
     private Stato stato;
+    private String orario;
+
+    public String getOrario() {
+        return orario;
+    }
+
+    public void setOrario(String orario) {
+        this.orario = orario;
+    }
 
     public Visita() {
     }

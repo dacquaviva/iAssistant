@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,9 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -31,10 +29,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
@@ -45,10 +44,10 @@ import gruppo_20.iassistant.model.Visita;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener {
+        implements NavigationView.OnNavigationItemSelectedListener,DatePickerDialog.OnDateSetListener {
 
 
-    private final Calendar calendarIstanceOfToday = Calendar.getInstance();;
+    final Calendar calendarIstanceOfToday = Calendar.getInstance();
 
 
     // Variabili per Firebase
@@ -91,211 +90,30 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        //Gestione floating button del calendario
-        FloatingActionButton calendarioButton = (FloatingActionButton)  findViewById(R.id.calendarioActionButton);
-        calendarioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dataDialog = DatePickerDialog.newInstance( MainActivity.this,
-                        calendarIstanceOfToday.get(Calendar.YEAR),
-                        calendarIstanceOfToday.get(Calendar.MONTH),
-                        calendarIstanceOfToday.get(Calendar.DAY_OF_MONTH));
-                dataDialog.setVersion(DatePickerDialog.Version.VERSION_1);
-                dataDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
-                dataDialog.setCancelColor(getResources().getColor(R.color.colorMappButton));
-                dataDialog.setOkText(getResources().getString(R.string.visualizza));
-                dataDialog.setOkColor(getResources().getColor(R.color.colorCallButton));
-                dataDialog.show(getFragmentManager(),"datepickerdialog");
-            }
-        });
-
         navigationView.setNavigationItemSelectedListener(this);
 
         //inizializzato calendario alla data odierna
         Calendar calendar = Calendar.getInstance();
-        String data = setCalendarToString(calendarIstanceOfToday);
+        final String data = setCalendarToString(calendarIstanceOfToday);
 
-        aggiornaVisiteSingolaGiornata(data);
+        List<Object> lista = new ArrayList<>();
+        String dateOfToday = setCalendarToString(calendarIstanceOfToday);
+        caricaProssimiTreGiorni(lista,dateOfToday,4,7);
 
     }
 
+
     //Riempimento dati della lista delle pianificazioni
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Visita> visite, List<String> orari, String dataToString) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, visite, orari, dataToString));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Object> lista) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new ComplexRecyclerViewAdapter(lista));
     }
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+   public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, monthOfYear, dayOfMonth);
-        aggiornaVisiteSingolaGiornata(setCalendarToString(calendar));
-    }
-
-    public static class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-
-        private final MainActivity mParentActivity;
-        private final List<Visita> mValuesViste;
-        private final List<String> mValuesOrari;
-        private final String mStringData;
-
-
-        /**
-         * COSTRUTTORE
-         */
-        SimpleItemRecyclerViewAdapter(MainActivity parent, List<Visita> itemsVisite, List<String> itemsOrari, String stringData) {
-            mValuesViste = itemsVisite;
-            mValuesOrari = itemsOrari ;
-            mParentActivity = parent;
-            mStringData = stringData;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_content, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
-            //Lettura dei dati del paziente dal DB
-            dbRefPazienti.child(mValuesViste.get(position).getIdPaziente()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    final Paziente paziente = dataSnapshot.getValue(Paziente.class);
-                    holder.mNomePaziente.setText(paziente.getCognome() + " " + paziente.getNome());
-                    holder.mTelefono.setText(paziente.getTelefono());
-                    holder.mIndirizzo.setText(paziente.getResidenza());
-                    holder.mNomePaziente.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
-                            intent.putExtra("cognomeNomePaziente",paziente.getCognome() + " " + paziente.getNome());
-                            intent.putExtra("idPaziente",mValuesViste.get(position).getIdPaziente());
-                            intent.putExtra("dataVisita", mStringData);
-                            intent.putExtra("orarioVisita",mValuesOrari.get(position));
-                            view.getContext().startActivity(intent);
-                        }
-                    });
-
-                    holder.mMapp.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String strUri = "geo:0,0?q=" + paziente.getResidenza() + " " + paziente.getCittaResidenza();
-                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
-                            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                            view.getContext().startActivity(intent);
-                        }
-                    });
-
-                    holder.mCall.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + paziente.getTelefono()));
-                            view.getContext().startActivity(intent);
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            //settaggio dati sullo stato della visita
-            switch (mValuesViste.get(position).getStato()) {
-                case Pianificato:
-                    holder.mStato.setText("Pianificata");
-                    holder.mStatoImage.setImageResource(R.drawable.ic_book_black_24dp);
-                    break;
-                case InCorso:
-                    holder.mStato.setText("In Corso");
-                    holder.mStatoImage.setImageResource(R.drawable.ic_more_horiz_black_24dp);
-                    break;
-                case Terminato:
-                    holder.mStato.setText("Effettuata");
-                    holder.mStatoImage.setImageResource(R.drawable.ic_assignment_turned_in_black_24dp);
-                    break;
-            }
-            holder.mOrario.setText(mValuesOrari.get(position));
-            int size = mValuesViste.get(position).getPrestazioni().size();
-            String pluralsPrestazioni;
-            if(size == 0){
-                pluralsPrestazioni = mParentActivity.getResources().getString(R.string.nessunaPrestazione);
-            } else{
-                pluralsPrestazioni = mParentActivity.getResources().getQuantityString(R.plurals.prestazioni,size,size);
-            }
-            holder.mNPrestazioni.setText(pluralsPrestazioni);
-
-            holder.mFreccia.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-
-                    //metodo per chiudere tutte le pianificazioni aperte quando si scrolla verso il basso
-                    ridimensionaPianificazioni(position , mParentActivity);
-
-                    if (!holder.expand) {
-                        holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
-                        holder.mNPrestazioni.setVisibility(View.VISIBLE);
-                        holder.mCall.setVisibility(View.VISIBLE);
-                        holder.mMapp.setVisibility(View.VISIBLE);
-                        holder.mIndirizzo.setVisibility(View.VISIBLE);
-                        holder.mTelefono.setVisibility(View.VISIBLE);
-                        holder.expand = true;
-                    } else {
-                        holder.mNPrestazioni.setVisibility(View.GONE);
-                        holder.mCall.setVisibility(View.GONE);
-                        holder.mMapp.setVisibility(View.GONE);
-                        holder.mIndirizzo.setVisibility(View.GONE);
-                        holder.mTelefono.setVisibility(View.GONE);
-                        holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
-                        holder.expand = false;
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return mValuesViste.size();
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            boolean expand = false;
-            final TextView mNomePaziente;
-            final TextView mStato;
-            final ImageView mStatoImage;
-            final TextView mOrario;
-
-            final TextView mNPrestazioni;
-            final TextView mIndirizzo;
-            final TextView mTelefono;
-            final FloatingActionButton mMapp;
-            final FloatingActionButton mCall;
-            final ImageButton mFreccia;
-
-            final RelativeLayout mLayout;
-
-            ViewHolder(View view) {
-                super(view);
-                mNomePaziente = (TextView) view.findViewById(R.id.nomePaziente);
-                mStato = (TextView) view.findViewById(R.id.stato);
-                mStatoImage = (ImageView) view.findViewById(R.id.statoImage);
-                mNPrestazioni = (TextView) view.findViewById(R.id.numPrestazioni);
-                mOrario = (TextView) view.findViewById(R.id.orario);
-                mIndirizzo = (TextView) view.findViewById(R.id.indirizzo);
-                mTelefono = (TextView) view.findViewById(R.id.numero);
-                mMapp = (FloatingActionButton) view.findViewById(R.id.mappButton);
-                mCall = (FloatingActionButton) view.findViewById(R.id.callButton);
-                mFreccia = (ImageButton) view.findViewById(R.id.freccia);
-                mLayout = (RelativeLayout) view.findViewById(R.id.layout);
-            }
-        }
+        List<Object> lista = new ArrayList<>();
+        caricaProssimiTreGiorni(lista,setCalendarToString(calendar),4,7);
     }
 
     @Override
@@ -315,18 +133,26 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // Gestione dell' apertura del data picker al click sull'icona nell'action bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.menu_item_data_picker) {
+            DatePickerDialog dataDialog = DatePickerDialog.newInstance( MainActivity.this,
+                    calendarIstanceOfToday.get(Calendar.YEAR),
+                    calendarIstanceOfToday.get(Calendar.MONTH),
+                    calendarIstanceOfToday.get(Calendar.DAY_OF_MONTH));
+            dataDialog.setVersion(DatePickerDialog.Version.VERSION_1);
+            dataDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
+            dataDialog.setCancelColor(getResources().getColor(R.color.colorMappButton));
+            dataDialog.setOkText(getResources().getString(R.string.visualizza));
+            dataDialog.setOkColor(getResources().getColor(R.color.colorCallButton));
+            dataDialog.show(getFragmentManager(),"datepickerdialog");
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -351,7 +177,6 @@ public class MainActivity extends AppCompatActivity
                     intent.setData(Uri.parse("tel:" + numHelpline));
                     startActivity(intent);
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -359,7 +184,7 @@ public class MainActivity extends AppCompatActivity
             });
 
         } else if (id == R.id.nav_myAccount) {
-
+            startActivity(new Intent(MainActivity.this, InfoOperatoreActivity.class));
         } else if (id == R.id.nav_associatedDevices) {
 
         } else if (id == R.id.nav_logOut) {
@@ -373,21 +198,21 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
-
     private static void ridimensionaPianificazioni (int position, MainActivity parent) {
         RecyclerView recyclerView = (RecyclerView) parent.findViewById(R.id.item_list);
         int size = recyclerView.getAdapter().getItemCount();
         for (int i = 0; i < size; i++) {
-            SimpleItemRecyclerViewAdapter.ViewHolder specificHolder = ( SimpleItemRecyclerViewAdapter.ViewHolder)recyclerView.findViewHolderForAdapterPosition(i);
-            if (i != position && specificHolder.expand) {
-                specificHolder.mNPrestazioni.setVisibility(View.GONE);
-                specificHolder.mCall.setVisibility(View.GONE);
-                specificHolder.mMapp.setVisibility(View.GONE);
-                specificHolder.mIndirizzo.setVisibility(View.GONE);
-                specificHolder.mTelefono.setVisibility(View.GONE);
-                specificHolder.mFreccia.animate().rotation(specificHolder.mFreccia.getRotation() + 180);
-                specificHolder.expand = false;
+            RecyclerView.ViewHolder specificHolder = ( RecyclerView.ViewHolder) recyclerView.findViewHolderForAdapterPosition(i);
+            if (specificHolder instanceof VisiteHolder) {
+                if (i != position && ((VisiteHolder)specificHolder).isExpand()) {
+                    ((VisiteHolder)specificHolder).getmNPrestazioni().setVisibility(View.GONE);
+                    ((VisiteHolder)specificHolder).getmCall().setVisibility(View.GONE);
+                    ((VisiteHolder)specificHolder).getmMapp().setVisibility(View.GONE);
+                    ((VisiteHolder)specificHolder).getmIndirizzo().setVisibility(View.GONE);
+                    ((VisiteHolder)specificHolder).getmTelefono().setVisibility(View.GONE);
+                    ((VisiteHolder)specificHolder).getmFreccia().animate().rotation(((VisiteHolder)specificHolder).getmFreccia().getRotation() + 180);
+                    ((VisiteHolder)specificHolder).setExpand(false);
+                }
             }
         }
     }
@@ -398,27 +223,67 @@ public class MainActivity extends AppCompatActivity
         int year = calendar.get(Calendar.YEAR);
         SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
         calendar.set(year, month , day);
-        return simpleData.format(calendar.getTime());
+       return simpleData.format(calendar.getTime());
     }
 
-    //
-    private void aggiornaVisiteSingolaGiornata(final String dataVisita){
+
+    private void caricaProssimiTreGiorni(final List<Object> lista, final String dataVisita, final int numGiorni,final int numMaxGiorni){
+
         dbRefVisite.child(dataVisita).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> orariList = new ArrayList<String>();
-                List<Visita> visiteList = new ArrayList<Visita>();
-                List<Paziente> pazientiList = new ArrayList<Paziente>();
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    orariList.add(data.getKey());
-                    Visita visita = data.getValue(Visita.class);
-                    visiteList.add(visita);
+                List<Object> listaRiempita =  lista;
+                String nextDate=dataVisita;
+                int giorniLettiPieni = numGiorni;
+                int giorniLettiVuoti = numMaxGiorni;
+                if(giorniLettiPieni > 0 && giorniLettiVuoti > 0) {
+
+
+                    if (dataSnapshot.getValue() == null) {
+                        final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                        final Date date;
+
+                        try {
+                            date = format.parse(dataVisita);
+                            final Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, 1);
+                            nextDate = format.format(calendar.getTime());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        giorniLettiVuoti--;
+                        caricaProssimiTreGiorni(listaRiempita,nextDate, giorniLettiPieni,giorniLettiVuoti);
+
+                    } else {
+                        listaRiempita.add(dataVisita);
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                            Visita visita = data.getValue(Visita.class);
+                            visita.setOrario(data.getKey());
+                            listaRiempita.add(visita);
+                        }
+                        giorniLettiPieni--;
+                        giorniLettiVuoti--;
+                        final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                        final Date date;
+
+                        try {
+                            date = format.parse(dataVisita);
+                            final Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            calendar.add(Calendar.DAY_OF_YEAR, 1);
+                            nextDate = format.format(calendar.getTime());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        caricaProssimiTreGiorni(listaRiempita,nextDate, giorniLettiPieni,giorniLettiVuoti);
+                    }
                 }
 
                 final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
                 assert recyclerView != null;
-                setupRecyclerView(recyclerView, visiteList, orariList, dataVisita);
-
+                setupRecyclerView(recyclerView, lista);
             }
 
             @Override
@@ -426,5 +291,188 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    private class ComplexRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private List<Object> items;
+        private String ultimaData; //salva un riferimento all'ultima data prelevata dalla Lista
+
+        public ComplexRecyclerViewAdapter(List<Object> items) {
+            this.items = items;
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            if (holder instanceof VisiteHolder) {
+                if (((VisiteHolder) holder).isExpand()) {
+                    ((VisiteHolder) holder).getmNPrestazioni().setVisibility(View.GONE);
+                    ((VisiteHolder) holder).getmCall().setVisibility(View.GONE);
+                    ((VisiteHolder) holder).getmMapp().setVisibility(View.GONE);
+                    ((VisiteHolder) holder).getmIndirizzo().setVisibility(View.GONE);
+                    ((VisiteHolder) holder).getmTelefono().setVisibility(View.GONE);
+                    ((VisiteHolder) holder).getmFreccia().animate().rotation(((VisiteHolder) holder).getmFreccia().getRotation() + 180);
+                    ((VisiteHolder) holder).setExpand(false);
+                }
+            }
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+            RecyclerView.ViewHolder viewHolder = null;
+            LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
+            switch (viewType) {
+                case 0:
+                    View v1 = layoutInflater.inflate(R.layout.item_data,viewGroup,false);
+                    viewHolder = new DataHolder(v1);
+                    break;
+                case 1:
+                    View v2 = layoutInflater.inflate(R.layout.item_list_content,viewGroup,false);
+                    viewHolder = new VisiteHolder(v2);
+                    break;
+            }
+
+            return viewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+            switch (viewHolder.getItemViewType()) {
+                case 0:
+                    DataHolder dataHolder = (DataHolder) viewHolder;
+                    cofigureDataHolder(dataHolder, position);
+                    break;
+                case 1:
+                    VisiteHolder visiteHolder = (VisiteHolder) viewHolder;
+                    cofigureVisiteHolder(visiteHolder, position);
+                    break;
+
+            }
+        }
+
+        private void cofigureVisiteHolder(final VisiteHolder visiteHolder, final int position) {
+
+            dbRefPazienti.child(((Visita)items.get(position)).getIdPaziente()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final Paziente paziente = dataSnapshot.getValue(Paziente.class);
+                    visiteHolder.getmNomePaziente().setText(paziente.getCognome() + " " + paziente.getNome());
+                    visiteHolder.getmTelefono().setText(paziente.getTelefono());
+                    visiteHolder.getmIndirizzo().setText(paziente.getResidenza());
+                    visiteHolder.getmLayout().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
+                            intent.putExtra("cognomeNomePaziente", paziente.getCognome() + " " + paziente.getNome());
+                            intent.putExtra("idPaziente", ((Visita)items.get(position)).getIdPaziente());
+                            intent.putExtra("dataVisita", ultimaData);
+                            intent.putExtra("orarioVisita", ((Visita)items.get(position)).getOrario());
+                            view.getContext().startActivity(intent);
+                        }
+                    });
+
+                    visiteHolder.getmMapp().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String strUri = "geo:0,0?q=" + paziente.getResidenza() + " " + paziente.getCittaResidenza();
+                            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(strUri));
+                            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                            view.getContext().startActivity(intent);
+                        }
+                    });
+
+                    visiteHolder.getmCall().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + paziente.getTelefono()));
+                            view.getContext().startActivity(intent);
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            //settaggio dati sullo stato della visita
+            switch (((Visita)items.get(position)).getStato()) {
+                case Pianificato:
+                    visiteHolder.getmStato().setText("Pianificata");
+                    visiteHolder.getmStatoImage().setImageResource(R.drawable.ic_book_black_24dp);
+                    break;
+                case InCorso:
+                    visiteHolder.getmStato().setText("In Corso");
+                    visiteHolder.getmStatoImage().setImageResource(R.drawable.ic_more_horiz_black_24dp);
+                    break;
+                case Terminato:
+                    visiteHolder.getmStato().setText("Effettuata");
+                    visiteHolder.getmStatoImage().setImageResource(R.drawable.ic_assignment_turned_in_black_24dp);
+                    break;
+            }
+            visiteHolder.getmOrario().setText((((Visita) items.get(position)).getOrario()));
+            int size = ((Visita) items.get(position)).getPrestazioni().size();
+            String pluralsPrestazioni;
+            if (size == 0) {
+                pluralsPrestazioni = MainActivity.this.getResources().getString(R.string.nessunaPrestazione);
+            } else {
+                pluralsPrestazioni = MainActivity.this.getResources().getQuantityString(R.plurals.prestazioni, size, size);
+            }
+            visiteHolder.getmNPrestazioni().setText(pluralsPrestazioni);
+
+            visiteHolder.getmFreccia().setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+
+                    //metodo per chiudere tutte le pianificazioni aperte quando si scrolla verso il basso
+
+                    ridimensionaPianificazioni(position, MainActivity.this);
+
+                    if (!visiteHolder.isExpand()) {
+                        visiteHolder.getmFreccia().animate().rotation( visiteHolder.getmFreccia().getRotation() + 180);
+                        visiteHolder.getmNPrestazioni().setVisibility(View.VISIBLE);
+                        visiteHolder.getmCall().setVisibility(View.VISIBLE);
+                        visiteHolder.getmMapp().setVisibility(View.VISIBLE);
+                        visiteHolder.getmIndirizzo().setVisibility(View.VISIBLE);
+                        visiteHolder.getmTelefono().setVisibility(View.VISIBLE);
+                        visiteHolder.setExpand(true);
+                    } else {
+                        visiteHolder.getmNPrestazioni().setVisibility(View.GONE);
+                        visiteHolder.getmCall().setVisibility(View.GONE);
+                        visiteHolder.getmMapp().setVisibility(View.GONE);
+                        visiteHolder.getmIndirizzo().setVisibility(View.GONE);
+                        visiteHolder.getmTelefono().setVisibility(View.GONE);
+                        visiteHolder.getmFreccia().animate().rotation(visiteHolder.getmFreccia().getRotation() + 180);
+                        visiteHolder.setExpand(false);
+                    }
+                }
+            });
+        }
+
+        private void cofigureDataHolder(DataHolder dataHolder, int position) {
+            String date = (String) items.get(position);
+            ultimaData = date;
+            dataHolder.getmData().setText(date);
+        }
+
+        @Override
+        public int getItemCount() {
+            return this.items.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+
+            if (items.get(position) instanceof Visita)
+                return 1;
+            else
+                return 0;
+        }
     }
 }

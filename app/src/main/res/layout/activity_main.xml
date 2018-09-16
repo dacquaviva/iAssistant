@@ -23,21 +23,4 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/calendarioActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:clickable="true"
-            app:backgroundTint="@android:color/holo_orange_light"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:srcCompat="@drawable/ic_assignment_black_24dp" />
-    </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.DrawerLayout>

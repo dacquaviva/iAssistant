@@ -204,7 +204,7 @@ public class PrestazioniActivity extends AppCompatActivity {
             }
         });
 
-        but.inflateMenu(R.menu.prestazioni_menu);
+        //but.inflateMenu(R.menu.prestazioni_menu);
 
         //gestione del pulsante di back
         but.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

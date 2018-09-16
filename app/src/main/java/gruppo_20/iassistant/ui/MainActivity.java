@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
 
                             Visita visita = data.getValue(Visita.class);
+                            visita.setData(dataVisita);
                             visita.setOrario(data.getKey());
                             listaRiempita.add(visita);
                         }
@@ -367,7 +368,7 @@ public class MainActivity extends AppCompatActivity
                             Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
                             intent.putExtra("cognomeNomePaziente", paziente.getCognome() + " " + paziente.getNome());
                             intent.putExtra("idPaziente", ((Visita)items.get(position)).getIdPaziente());
-                            intent.putExtra("dataVisita", ultimaData);
+                            intent.putExtra("dataVisita", ((Visita)items.get(position)).getData());
                             intent.putExtra("orarioVisita", ((Visita)items.get(position)).getOrario());
                             view.getContext().startActivity(intent);
                         }
@@ -391,7 +392,6 @@ public class MainActivity extends AppCompatActivity
                             view.getContext().startActivity(intent);
                         }
                     });
-
                 }
 
                 @Override
@@ -429,8 +429,6 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void onClick(View v) {
-
-                    //metodo per chiudere tutte le pianificazioni aperte quando si scrolla verso il basso
 
                     ridimensionaPianificazioni(position, MainActivity.this);
 

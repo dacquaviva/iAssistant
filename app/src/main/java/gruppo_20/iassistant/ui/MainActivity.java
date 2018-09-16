@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 
 import java.text.SimpleDateFormat;
@@ -44,7 +45,7 @@ import gruppo_20.iassistant.model.Visita;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DatePickerDialog.OnDateSetListener {
 
 
     private final Calendar calendarIstanceOfToday = Calendar.getInstance();;
@@ -90,6 +91,24 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //Gestione floating button del calendario
+        FloatingActionButton calendarioButton = (FloatingActionButton)  findViewById(R.id.calendarioActionButton);
+        calendarioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dataDialog = DatePickerDialog.newInstance( MainActivity.this,
+                        calendarIstanceOfToday.get(Calendar.YEAR),
+                        calendarIstanceOfToday.get(Calendar.MONTH),
+                        calendarIstanceOfToday.get(Calendar.DAY_OF_MONTH));
+                dataDialog.setVersion(DatePickerDialog.Version.VERSION_1);
+                dataDialog.setAccentColor(getResources().getColor(R.color.colorPrimary));
+                dataDialog.setCancelColor(getResources().getColor(R.color.colorMappButton));
+                dataDialog.setOkText(getResources().getString(R.string.visualizza));
+                dataDialog.setOkColor(getResources().getColor(R.color.colorCallButton));
+                dataDialog.show(getFragmentManager(),"datepickerdialog");
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(this);
 
         //inizializzato calendario alla data odierna
@@ -103,6 +122,13 @@ public class MainActivity extends AppCompatActivity
     //Riempimento dati della lista delle pianificazioni
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Visita> visite, List<String> orari, String dataToString) { //@NonNull specifica che il metodo non potrà mai restituire null
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, visite, orari, dataToString));
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, monthOfYear, dayOfMonth);
+        aggiornaVisiteSingolaGiornata(setCalendarToString(calendar));
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -146,7 +172,7 @@ public class MainActivity extends AppCompatActivity
                         public void onClick(View view) {
                             Intent intent = new Intent(view.getContext(), PrestazioniActivity.class);
                             intent.putExtra("cognomeNomePaziente",paziente.getCognome() + " " + paziente.getNome());
-                            SimpleDateFormat simpleData = new SimpleDateFormat("dd-MM-yyyy");
+                            intent.putExtra("idPaziente",mValuesViste.get(position).getIdPaziente());
                             intent.putExtra("dataVisita", mStringData);
                             intent.putExtra("orarioVisita",mValuesOrari.get(position));
                             view.getContext().startActivity(intent);
@@ -211,7 +237,7 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(View v) {
 
                     //metodo per chiudere tutte le pianificazioni aperte quando si scrolla verso il basso
-                    //ridimensionaPianificazioni(position , mParentActivity);
+                    ridimensionaPianificazioni(position , mParentActivity);
 
                     if (!holder.expand) {
                         holder.mFreccia.animate().rotation(holder.mFreccia.getRotation() + 180);
@@ -317,12 +343,25 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_messages) {
 
         } else if (id == R.id.nav_helpline) {
+            FirebaseDatabase.getInstance().getReference().child("helpline").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String numHelpline = dataSnapshot.getValue(String.class);
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + numHelpline));
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         } else if (id == R.id.nav_myAccount) {
 
         } else if (id == R.id.nav_associatedDevices) {
-            startActivity(new Intent(MainActivity.this, MisurazioniActivity.class));
-            finish();
+
         } else if (id == R.id.nav_logOut) {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

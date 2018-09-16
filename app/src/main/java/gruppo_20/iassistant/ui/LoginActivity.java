@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,18 +35,19 @@ public class LoginActivity extends AppCompatActivity {
     private Button logButton;
     private FirebaseAuth mAuth;
 
-    private boolean animationEnded = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         final TextView appName = (TextView) findViewById(R.id.appName);
-        final LinearLayout loginLayout = (LinearLayout) findViewById(R.id.login_layout);
-        ImageView cuore = (ImageView) findViewById(R.id.cuore);
-        ImageView ombra = (ImageView) findViewById(R.id.ombra);
-        ImageView mano = (ImageView)findViewById(R.id.mano);
+        final ConstraintLayout loginLayout = (ConstraintLayout) findViewById(R.id.login_layout);
+        final ImageView cuore = (ImageView) findViewById(R.id.cuore);
+        final ImageView ombra = (ImageView) findViewById(R.id.ombra);
+        final ImageView mano = (ImageView)  findViewById(R.id.mano);
+        final TextInputLayout inputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayout);
+        final TextInputLayout inputLayoutPsw = (TextInputLayout) findViewById(R.id.textInputLayout2);
+
 
         mAuth = FirebaseAuth.getInstance();
         emailView = (EditText) findViewById(R.id.email);
@@ -56,87 +59,46 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
-        if (savedInstanceState == null || !savedInstanceState.getBoolean("animation ended") ) {
-            //esegui l'animazione
-            Animation rotate = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.rotate);
-            Animation fadeIn = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_in);
-            Animation fadeOut = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_out);
 
-            final ValueAnimator animator = ValueAnimator.ofInt(appName.getPaddingTop(), 120);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                           @Override
-                                           public void onAnimationUpdate(ValueAnimator valueAnimator){
-                                               appName.setPadding(0, (Integer) valueAnimator.getAnimatedValue(), 0, 0);
-                                           }
-                                       }
-            );
-            animator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
+        //esegui l'animazione
+        Animation rotate = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.rotate);
+        Animation fadeIn = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_in);
+        Animation fadeOut = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.fade_out);
 
-                }
+        AnimationSet manoAnimation = new AnimationSet(false);
+        AnimationSet animation = new AnimationSet(false);
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    loginLayout.setVisibility(View.VISIBLE);
-                    animationEnded = true;
-                }
+        manoAnimation.addAnimation(rotate);
+        manoAnimation.addAnimation(fadeOut);
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+        animation.addAnimation(fadeIn);
+        animation.addAnimation(fadeOut);
 
-                }
+        manoAnimation.setFillAfter(true);
+        animation.setFillAfter(true);
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
+        mano.startAnimation(manoAnimation);
+        cuore.startAnimation(animation);
+        ombra.startAnimation(animation);
+        appName.startAnimation(fadeIn);
 
-                }
-            });
-            animator.setDuration(500);
-
-            AnimationSet manoAnimation = new AnimationSet(false);
-            AnimationSet animation = new AnimationSet(false);
-
-            manoAnimation.addAnimation(rotate);
-            manoAnimation.addAnimation(fadeOut);
-
-            animation.addAnimation(fadeIn);
-            animation.addAnimation(fadeOut);
-
-            manoAnimation.setFillAfter(true);
-            animation.setFillAfter(true);
-
-            mano.startAnimation(manoAnimation);
-            cuore.startAnimation(animation);
-            ombra.startAnimation(animation);
-            appName.startAnimation(fadeIn);
-
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    animator.start();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-        } else {
-            //mostrare solo login
-            cuore.setVisibility(View.GONE);
-            mano.setVisibility(View.GONE);
-            ombra.setVisibility(View.GONE);
-            appName.setPadding(0, 120, 0, 0);
-            loginLayout.setVisibility(View.VISIBLE);
-            animationEnded = true;
-        }
+        fadeOut.setAnimationListener(new Animation.AnimationListener(){
+            @Override
+            public void onAnimationStart(Animation arg0) {
+            }
+            @Override
+            public void onAnimationRepeat(Animation arg0) {
+            }
+            @Override
+            public void onAnimationEnd(Animation arg0) {
+                cuore.setVisibility(View.GONE);
+                ombra.setVisibility(View.GONE);
+                mano.setVisibility(View.GONE);
+                inputLayoutEmail.setVisibility(View.VISIBLE);
+                inputLayoutPsw.setVisibility(View.VISIBLE);
+                logButton.setVisibility(View.VISIBLE);
+            }
+        });
 
         logButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,11 +141,5 @@ public class LoginActivity extends AppCompatActivity {
                         });
             }
         });
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("animation ended",animationEnded);
     }
 }

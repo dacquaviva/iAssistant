@@ -12,44 +12,56 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/anagrafica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#c5c5c5"
+            android:gravity="center_horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="Anagrafica"
+            android:fontFamily="@font/sansregular"
+            android:textSize="16sp"
+             />
+
+        <TextView
             android:id="@+id/textView7"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Nome"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/anagrafica" />
 
         <TextView
             android:id="@+id/anagraficaPaziente_nome"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
+            android:background="@drawable/text_view_border"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/anagrafica" />
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Cognome"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,12 +71,11 @@
             android:id="@+id/anagraficaPaziente_cognome"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -74,13 +85,12 @@
             android:id="@+id/textView11"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Codice Fiscale"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,11 +100,10 @@
             android:id="@+id/anagraficaPaziente_codiceFiscale"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
+            android:fontFamily="@font/sansregular"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -105,13 +114,12 @@
             android:id="@+id/textView13"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Luogo di Nascita"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,12 +129,11 @@
             android:id="@+id/anagraficaPaziente_luogoNascita"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -136,11 +143,10 @@
             android:id="@+id/textView15"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Data di Nascita"
+            android:fontFamily="@font/sansregular"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -152,12 +158,11 @@
             android:id="@+id/anagraficaPaziente_dataNascita"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -167,12 +172,11 @@
             android:id="@+id/textView17"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Indirizzo"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
@@ -183,12 +187,11 @@
             android:id="@+id/anagraficaPaziente_indirizzo"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toStartOf="@+id/floatingActionButton2"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
             app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_dataNascita" />
@@ -197,12 +200,11 @@
             android:id="@+id/textView20"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Città di Residenza"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
@@ -215,10 +217,9 @@
             android:layout_height="60dp"
             android:layout_marginEnd="8dp"
             android:gravity="fill_vertical"
-            android:background="@drawable/bordo_textview"
-
             android:paddingLeft="8dp"
             android:text="TextView"
+            android:fontFamily="@font/sansregular"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline4"
@@ -228,12 +229,11 @@
             android:id="@+id/textView22"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Num. Telefono"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
@@ -244,12 +244,11 @@
             android:id="@+id/anagraficaPaziente_telefono"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
             android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
             app:layout_constraintEnd_toStartOf="@+id/floatingActionButton3"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/textView22"
@@ -259,11 +258,10 @@
             android:id="@+id/valorOttenutoBlu"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="Medico Curante"
+            android:fontFamily="@font/sansregular"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -275,11 +273,10 @@
             android:id="@+id/anagraficaPaziente_medicoCurante"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:background="@drawable/bordo_textview"
-
             android:gravity="fill_vertical"
             android:paddingLeft="8dp"
             android:text="TextView"
+            android:fontFamily="@font/sansregular"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -300,9 +297,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bordo_textview"
+            
 
             android:clickable="true"
+            android:scaleX="0.85"
+            android:scaleY="0.85"
             app:backgroundTint="@color/colorCallButton"
             app:layout_constraintBottom_toBottomOf="@+id/anagraficaPaziente_indirizzo"
             app:layout_constraintEnd_toEndOf="parent"
@@ -316,14 +315,165 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:background="@drawable/bordo_textview"
 
+            android:clickable="true"
+            android:scaleX="0.85"
+            android:scaleY="0.85"
             app:backgroundTint="@color/colorMappButton"
             app:layout_constraintBottom_toBottomOf="@+id/anagraficaPaziente_telefono"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/anagraficaPaziente_telefono"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_location_on_black_24dp" />
+
+        <TextView
+            android:id="@+id/cartella_clinica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#c5c5c5"
+            android:gravity="center_horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:fontFamily="@font/sansregular"
+            android:text="Cartella Clinica"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_medicoCurante" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:fontFamily="@font/sansregular"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Inizio raccolta dati:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cartella_clinica" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_inizioRaccoltaDati"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:fontFamily="@font/sansregular"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/cartella_clinica" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Diagnosi:"
+            android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Allergie:"
+            android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Trattamento Farmacologico:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/sansregular"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="Malattie Concomitanti:"
+            android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_Diagnosi"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:fontFamily="@font/sansregular"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_inizioRaccoltaDati" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_Allergie"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:fontFamily="@font/sansregular"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView14"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_Diagnosi" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_MalattieConcomitanti"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            android:fontFamily="@font/sansregular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView18"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_Allergie" />
+
+        <TextView
+            android:id="@+id/anagraficaPaziente_TrattamentoFarmacologico"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:fontFamily="@font/sansregular"
+            android:gravity="fill_vertical"
+            android:paddingLeft="8dp"
+            android:text="TextView"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView16"
+            app:layout_constraintTop_toBottomOf="@+id/anagraficaPaziente_MalattieConcomitanti" />
+
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -176,7 +176,7 @@ public class PrestazioniActivity extends AppCompatActivity {
         nomePaziente.setText(cognomeNomePaziente);
         final TextView numPrestazioniDaSvolgere = (TextView)  findViewById(R.id.headPrestazioni_numPrestazioniTextView);
 
-        //Riempimento reciclerView con i dati delle prestazioni del DB
+        //Riempimento recyclerView con i dati delle prestazioni del DB
         dbRefVisita.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -188,7 +188,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                         terminaPianificazione.setVisibility(View.VISIBLE);
                     }
                 }else {
-                    numPrestazioniDaSvolgere.setText("Ancora " + getResources().getQuantityString(R.plurals.prestazioni, prestazioniDaSvolgere, prestazioniDaSvolgere) + " da svolgere");
+                    numPrestazioniDaSvolgere.setText(getResources().getQuantityString(R.plurals.prestazioni, prestazioniDaSvolgere, prestazioniDaSvolgere) + " da svolgere");
                 }
 
                 assert prestazioniList != null;

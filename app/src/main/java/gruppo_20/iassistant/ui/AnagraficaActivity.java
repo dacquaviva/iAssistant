@@ -32,6 +32,7 @@ public class AnagraficaActivity extends AppCompatActivity {
         final TextView nomePaziente =(TextView)  findViewById(R.id.anagraficaPaziente_nome);
         final TextView cognomePaziente =(TextView)  findViewById(R.id.anagraficaPaziente_cognome);
         final TextView codiceFiscalePaziente =(TextView)  findViewById(R.id.anagraficaPaziente_codiceFiscale);
+        final TextView cittaNascitaPaziente = (TextView)  findViewById(R.id.anagraficaPaziente_luogoNascita);
         final TextView dataNascitaPaziente =(TextView)  findViewById(R.id.anagraficaPaziente_dataNascita);
         final TextView indirizzoPaziente =(TextView)  findViewById(R.id.anagraficaPaziente_indirizzo);
         final TextView cittaResidenzaPaziente =(TextView)  findViewById(R.id.anagraficaPaziente_cittaResidenza);
@@ -54,6 +55,7 @@ public class AnagraficaActivity extends AppCompatActivity {
                 Paziente paziente = dataSnapshot.getValue(Paziente.class);
                 nomePaziente.setText(paziente.getNome());
                 cognomePaziente.setText(paziente.getCognome());
+                cittaNascitaPaziente.setText(paziente.getLuogoNascita());
                 codiceFiscalePaziente.setText(paziente.getCodiceFiscale());
                 dataNascitaPaziente.setText(paziente.getDataNascita());
                 indirizzoPaziente.setText(paziente.getResidenza());

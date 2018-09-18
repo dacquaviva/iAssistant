@@ -167,7 +167,9 @@ public class PrestazioniActivity extends AppCompatActivity {
         terminaPianificazione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO ANGELO
+                dbRefVisita.child("stato").setValue(Stato.Terminato);
+                Toast.makeText(PrestazioniActivity.this, getResources().getString(R.string.operazioneTerminataConSuccesso), Toast.LENGTH_LONG).show();
+                terminaPianificazione.setVisibility(View.GONE);
             }
         });
 

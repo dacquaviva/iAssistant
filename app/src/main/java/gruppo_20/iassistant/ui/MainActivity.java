@@ -45,15 +45,16 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,DatePickerDialog.OnDateSetListener {
 
 
-    final Calendar calendarIstanceOfToday = Calendar.getInstance();
-
-
     // Variabili per Firebase
     private final String idOperatore = FirebaseAuth.getInstance().getUid();
     private String eMailOperatore = FirebaseAuth.getInstance().getCurrentUser().getEmail();
     private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
     private final DatabaseReference dbRefVisite = dbRefOperatore.child("visite");
     private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
+
+    private ComplexRecyclerViewAdapter recycleViewLista;
+    private String dataSelezionata;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +93,16 @@ public class MainActivity extends AppCompatActivity
 
         //caricamento visite successive alla data odierna
         List<Object> lista = new ArrayList<>();
-        String dateOfToday = setCalendarToString(calendarIstanceOfToday);
-        caricaProssimiTreGiorni(lista,dateOfToday,4,7);
+        dataSelezionata = setCalendarToString(Calendar.getInstance());
+        caricaProssimiTreGiorni(lista, dataSelezionata,4,7);
 
     }
 
 
     //Riempimento dati della lista delle pianificazioni
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Object> lista) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new ComplexRecyclerViewAdapter(lista));
+        recycleViewLista = new ComplexRecyclerViewAdapter(lista);
+        recyclerView.setAdapter(recycleViewLista);
     }
 
     @Override
@@ -108,7 +110,9 @@ public class MainActivity extends AppCompatActivity
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, monthOfYear, dayOfMonth);
         List<Object> lista = new ArrayList<>();
-        caricaProssimiTreGiorni(lista,setCalendarToString(calendar),4,7);
+        dataSelezionata = setCalendarToString(calendar);
+        caricaProssimiTreGiorni(lista, dataSelezionata,4,7);
+
     }
 
     @Override
@@ -133,11 +137,12 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
+        Calendar calendarIstanceOfToday = Calendar.getInstance();
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.menu_item_data_picker) {
             DatePickerDialog dataDialog = DatePickerDialog.newInstance( MainActivity.this,
+
                     calendarIstanceOfToday.get(Calendar.YEAR),
                     calendarIstanceOfToday.get(Calendar.MONTH),
                     calendarIstanceOfToday.get(Calendar.DAY_OF_MONTH));
@@ -276,7 +281,7 @@ public class MainActivity extends AppCompatActivity
                         caricaProssimiTreGiorni(listaRiempita,nextDate, giorniLettiPieni,giorniLettiVuoti);
                     }
                 }else{
-                    final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+                    recyclerView = (RecyclerView) findViewById(R.id.item_list);
                     assert recyclerView != null;
                     setupRecyclerView(recyclerView, lista);
                 }
@@ -298,6 +303,10 @@ public class MainActivity extends AppCompatActivity
 
         public ComplexRecyclerViewAdapter(List<Object> items) {
             this.items = items;
+        }
+
+        private void azzeraRecycleView(){
+            this.items = null;
         }
 
         @Override
@@ -368,6 +377,7 @@ public class MainActivity extends AppCompatActivity
                             intent.putExtra("dataVisita", ((Visita)items.get(position)).getData());
                             intent.putExtra("orarioVisita", ((Visita)items.get(position)).getOrario());
                             view.getContext().startActivity(intent);
+
                         }
                     });
 
@@ -469,5 +479,13 @@ public class MainActivity extends AppCompatActivity
             else
                 return 0;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recyclerView.setAdapter(null);
+            caricaProssimiTreGiorni(new ArrayList<Object>(), dataSelezionata,4,7);
+
     }
 }

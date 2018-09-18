@@ -27,6 +27,7 @@
     </string>
     <string name="visualizza">Visualizza</string>
     <string name="nessunaPrestazione">Nessuna prestazione</string>
+    <string name="operazioneTerminataConSuccesso">Operazione terminata con successo</string>
 
     <plurals name="prestazioni">
         <item quantity="one">%d prestazione</item>

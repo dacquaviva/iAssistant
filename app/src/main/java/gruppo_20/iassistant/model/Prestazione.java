@@ -1,17 +1,19 @@
 package gruppo_20.iassistant.model;
 
+import com.github.mikephil.charting.data.Entry;
+
 import java.util.ArrayList;
 
 public class Prestazione {
     private String nomePrestazione;
-    private String risultato;
+    private ArrayList<Entry> risultato;
     private String motivazione;
     private String datiOpzionali;
 
     public Prestazione() {
     }
 
-    public Prestazione(String nomePrestazione, String risultato, String motivazione, String datiOpzionali) {
+    public Prestazione(String nomePrestazione, ArrayList<Entry> risultato, String motivazione, String datiOpzionali) {
         this.nomePrestazione = nomePrestazione;
         this.risultato = risultato;
         this.motivazione = motivazione;
@@ -27,7 +29,7 @@ public class Prestazione {
         return nomePrestazione;
     }
 
-    public String getRisultato() {
+    public ArrayList<Entry> getRisultato() {
         return risultato;
     }
 
@@ -44,7 +46,7 @@ public class Prestazione {
         this.nomePrestazione = nomePrestazione;
     }
 
-    public void setRisultato(String risultato) {
+    public void setRisultato(ArrayList<Entry> risultato) {
         this.risultato = risultato;
     }
 
@@ -57,8 +59,8 @@ public class Prestazione {
     }
 
     public boolean isEffectuated(){
-        if (this.risultato != null){
-            return true;
-        } else return false;
+        if (this.risultato == null || this.risultato.size()==0){
+            return false;
+        } else return true;
     }
 }

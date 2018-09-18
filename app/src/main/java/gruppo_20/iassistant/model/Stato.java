@@ -5,3 +5,4 @@ public enum Stato {
     InCorso,
     Terminato
 }
+

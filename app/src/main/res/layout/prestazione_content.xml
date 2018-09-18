@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             android:fontFamily="@font/sansregular"
             android:lines="1"
-            android:text="TextView"
+            android:text=""
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/numeroPrestazione"

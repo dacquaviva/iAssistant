@@ -7,7 +7,7 @@
         android:id="@+id/app_bar_back"
         android:icon="@drawable/ic_classic_back_24dp"
         android:orderInCategory="9"
-        android:title="action back"
+        android:title="@string/action_back"
         app:showAsAction="ifRoom" />
 
 </menu>

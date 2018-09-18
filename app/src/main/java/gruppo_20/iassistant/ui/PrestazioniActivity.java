@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -249,15 +250,16 @@ public class PrestazioniActivity extends AppCompatActivity {
             mParentActivity = parent;
         }
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.prestazione_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
             holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
 
             if(mValues.get(position).isEffectuated()){
@@ -266,7 +268,7 @@ public class PrestazioniActivity extends AppCompatActivity {
             }
             holder.mNumPrestazione.setText("" + (position + 1));
 
-            holder.mNomePrestazione.setOnClickListener(new View.OnClickListener() {
+            holder.mlayoutPrestazine.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     modalitaInserimentoDialog = new Dialog(v.getContext());
@@ -328,7 +330,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         conferma.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if(dato_arrivato == true){
+                                                if(dato_arrivato){
                                                     dato_arrivato = false;
                                                     Toast.makeText(v.getContext(),"dati salvati correttamente",Toast.LENGTH_LONG).show();
                                                     clientClass.cancel();
@@ -402,11 +404,13 @@ public class PrestazioniActivity extends AppCompatActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             final Button mNumPrestazione;
             final TextView mNomePrestazione;
+            final LinearLayout mlayoutPrestazine;
 
             ViewHolder(View view) {
                 super(view);
                 mNumPrestazione = (Button) view.findViewById(R.id.numeroPrestazione);
                 mNomePrestazione = (TextView) view.findViewById(R.id.nomePrestazione);
+                mlayoutPrestazine = (LinearLayout) view.findViewById(R.id.pianificazioniListContent);
             }
         }
     }

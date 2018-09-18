@@ -60,7 +60,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="22dp"
         android:background="@android:color/transparent"
-        android:onClick="onClick"
         app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
     <TextView
@@ -109,7 +108,8 @@
         android:clickable="true"
         android:visibility="gone"
         app:backgroundTint="@color/colorMappButton"
-        app:srcCompat="@drawable/ic_place_black_24dp" />
+        app:srcCompat="@drawable/ic_place_black_24dp"
+        android:focusable="true" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/callButton"
@@ -123,6 +123,7 @@
         android:clickable="true"
         android:visibility="gone"
         app:backgroundTint="@color/colorCallButton"
-        app:srcCompat="@drawable/ic_call_black_24dp" />
+        app:srcCompat="@drawable/ic_call_black_24dp"
+        android:focusable="true" />
 
 </RelativeLayout>

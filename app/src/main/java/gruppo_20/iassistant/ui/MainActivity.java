@@ -275,11 +275,13 @@ public class MainActivity extends AppCompatActivity
                         }
                         caricaProssimiTreGiorni(listaRiempita,nextDate, giorniLettiPieni,giorniLettiVuoti);
                     }
+                }else{
+                    final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+                    assert recyclerView != null;
+                    setupRecyclerView(recyclerView, lista);
                 }
 
-                final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
-                assert recyclerView != null;
-                setupRecyclerView(recyclerView, lista);
+
             }
 
             @Override

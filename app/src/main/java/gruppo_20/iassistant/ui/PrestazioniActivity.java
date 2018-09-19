@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.data.Entry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -477,14 +478,30 @@ public class PrestazioniActivity extends AppCompatActivity {
 
                                 Button conferma = (Button) inserimentoDialog.findViewById(R.id.conferma_button_manual);
                                 Button annulla = (Button) inserimentoDialog.findViewById(R.id.button_annulla);
-                                TextView dato = (TextView) inserimentoDialog.findViewById(R.id.datoInserito);
-                                EditText noteInserite = (EditText) inserimentoDialog.findViewById(R.id.noteInserite);
+                                final TextView dato = (TextView) inserimentoDialog.findViewById(R.id.datoInserito);
+                                final EditText noteInserite = (EditText) inserimentoDialog.findViewById(R.id.noteInserite);
 
-                                //TODO ANGELO
+
                                 conferma.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        // salvare nel database il valore contenuto nella TextView dato, e nella EditText noteInserite controlllare se sono presenti
+                                        if(dato.getText().toString().equals("")) {
+                                            Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto),Toast.LENGTH_LONG ).show();
+                                        } else{
+                                            Long currentTime = System.currentTimeMillis();
+                                            String stringCurrentTime = currentTime.toString();
+                                            stringCurrentTime = (String) stringCurrentTime.subSequence(stringCurrentTime.length() - 7, stringCurrentTime.length());
+                                            Entry entry = new Entry(Float.parseFloat(dato.getText().toString()), Float.parseFloat(stringCurrentTime));
+                                            ArrayList<Entry> array = new ArrayList<Entry>();
+                                            array.add(entry);
+                                            Prestazione mValuesDaSalvare = mValues.get(position);
+                                            mValuesDaSalvare.setRisultato(array);
+                                            if (!noteInserite.getText().toString().equals("")){
+                                                mValuesDaSalvare.setDatiOpzionali(noteInserite.getText().toString());
+                                            }
+                                            dbRefVisita.child("prestazioni").child("" + position).setValue(mValuesDaSalvare);
+                                            inserimentoDialog.cancel();
+                                        }
                                     }
                                 });
                                 annulla.setOnClickListener(new View.OnClickListener() {

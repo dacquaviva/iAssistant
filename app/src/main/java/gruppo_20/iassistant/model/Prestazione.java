@@ -10,6 +10,11 @@ public class Prestazione {
     private String nomePrestazione;
     private ArrayList<Entry> risultato;
     private String motivazione;
+
+    public void setDatiOpzionali(String datiOpzionali) {
+        this.datiOpzionali = datiOpzionali;
+    }
+
     private String datiOpzionali;
 
     public Prestazione() {

@@ -438,34 +438,34 @@ public class PrestazioniActivity extends AppCompatActivity {
             holder.mlayoutPrestazine.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    modalitaInserimentoDialog = new Dialog(v.getContext());
-                    modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
-                    modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
+                    if (!mValues.get(position).isEffectuated()){
+                        modalitaInserimentoDialog = new Dialog(v.getContext());
+                        modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
+                        modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
 
 
-                    cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
-                    cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
-                    bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                    if(bluetoothAdapter != null) {
+                        cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
+                        cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+                        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        if (bluetoothAdapter != null) {
 
 
-                        cBlu.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                            cBlu.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
 
-                                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                                startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+                                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                    startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
 
 
-
-                            }
-                        });
-                    }else{
-                        cBlu.setVisibility(View.GONE);
-                        Toast.makeText(v.getContext(),"Il divice non e' dotato di bluetooth",Toast.LENGTH_LONG).show();
-                        cMan.setPadding(5,0,5,0);
-                    }
+                                }
+                            });
+                        } else {
+                            cBlu.setVisibility(View.GONE);
+                            Toast.makeText(v.getContext(), "Il divice non e' dotato di bluetooth", Toast.LENGTH_LONG).show();
+                            cMan.setPadding(5, 0, 5, 0);
+                        }
 
                         cMan.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -485,9 +485,9 @@ public class PrestazioniActivity extends AppCompatActivity {
                                 conferma.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if(dato.getText().toString().equals("")) {
-                                            Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto),Toast.LENGTH_LONG ).show();
-                                        } else{
+                                        if (dato.getText().toString().equals("")) {
+                                            Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto), Toast.LENGTH_LONG).show();
+                                        } else {
                                             Long currentTime = System.currentTimeMillis();
                                             String stringCurrentTime = currentTime.toString();
                                             stringCurrentTime = (String) stringCurrentTime.subSequence(stringCurrentTime.length() - 7, stringCurrentTime.length());
@@ -496,7 +496,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                                             array.add(entry);
                                             Prestazione mValuesDaSalvare = mValues.get(position);
                                             mValuesDaSalvare.setRisultato(array);
-                                            if (!noteInserite.getText().toString().equals("")){
+                                            if (!noteInserite.getText().toString().equals("")) {
                                                 mValuesDaSalvare.setDatiOpzionali(noteInserite.getText().toString());
                                             }
                                             dbRefVisita.child("prestazioni").child("" + position).setValue(mValuesDaSalvare);
@@ -513,10 +513,13 @@ public class PrestazioniActivity extends AppCompatActivity {
                                 inserimentoDialog.show();
                             }
                         });
-                        modalitaInserimentoDialog.show();
+                    modalitaInserimentoDialog.show();
+                    } else {
+                        //TODO visualizzazione risultati
                     }
+                }//fine metodo onClick
 
-            });
+            });// fine onClickListener
 
         }
 

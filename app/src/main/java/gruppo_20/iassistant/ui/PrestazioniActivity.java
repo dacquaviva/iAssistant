@@ -179,6 +179,7 @@ public class PrestazioniActivity extends AppCompatActivity {
         final TextView numPrestazioniDaSvolgere = (TextView)  findViewById(R.id.headPrestazioni_numPrestazioniTextView);
 
         //Riempimento recyclerView con i dati delle prestazioni del DB
+        dbRefVisita.keepSynced(true);
         dbRefVisita.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

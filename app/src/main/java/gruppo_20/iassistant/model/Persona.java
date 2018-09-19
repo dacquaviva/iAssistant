@@ -1,5 +1,6 @@
 package gruppo_20.iassistant.model;
 
+//classe astratta che permette di ereditare proprietà comuni a Operatore e Paziente
 public abstract class Persona {
     private String nome;
     private String cognome;
@@ -13,18 +14,6 @@ public abstract class Persona {
     public Persona() {
 
     }
-
-    public Persona(String nome, String cognome, String codiceFiscale, String dataNascita, String luogoNascita,String cittaResidenza, String residenza, String telefono) {
-        this.nome = nome;
-        this.cognome = cognome;
-        this.codiceFiscale = codiceFiscale;
-        this.dataNascita = dataNascita;
-        this.luogoNascita = luogoNascita;
-        this.cittaResidenza = cittaResidenza;
-        this.residenza = residenza;
-        this.telefono = telefono;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -59,31 +48,4 @@ public abstract class Persona {
         this.nome = nome;
     }
 
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
-    }
-
-    public void setCodiceFiscale(String codice_fiscale) {
-        this.codiceFiscale = codice_fiscale;
-    }
-
-    public void setDataNascita(String dataNascita) {
-        this.dataNascita = dataNascita;
-    }
-
-    public void setLuogoNascita(String luogoNascita){
-        this.luogoNascita = luogoNascita;
-    }
-
-    public void setCittaResidenza(String cittaResidenza){
-        this.cittaResidenza = cittaResidenza;
-    }
-
-    public void setResidenza(String residenza) {
-        this.residenza = residenza;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
 }

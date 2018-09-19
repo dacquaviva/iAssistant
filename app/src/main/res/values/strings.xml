@@ -29,6 +29,7 @@
     <string name="nessunaPrestazione">Nessuna prestazione</string>
     <string name="operazioneTerminataConSuccesso">Operazione terminata con successo</string>
     <string name="problemiDiConnessione">Problemi di connessione</string>
+    <string name="risultatoVuoto">Il risultato non puo essere vuoto</string>
 
     <plurals name="prestazioni">
         <item quantity="one">%d prestazione</item>

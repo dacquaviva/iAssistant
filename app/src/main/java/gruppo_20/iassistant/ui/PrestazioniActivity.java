@@ -1,14 +1,19 @@
 package gruppo_20.iassistant.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.chip.Chip;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,9 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-
 import gruppo_20.iassistant.R;
 import gruppo_20.iassistant.model.Prestazione;
 import gruppo_20.iassistant.model.Stato;
@@ -76,8 +80,10 @@ public class PrestazioniActivity extends AppCompatActivity {
     private static TextView stato,valorOttenutoBlu;
     private static Chip terminaPianificazione;
     private static BluetoothAdapter bluetoothAdapter;
-    private static BluetoothDevice[] btArray;
+    private static ArrayList<BluetoothDevice> bluetoothDevicesTrovati;
+    private ArrayList<String> devicesTrovati;
     private static ArrayList<String> dati;
+    ArrayAdapter<String> arrayAdapter;
 
 
     private static SendReceive sendReceive;
@@ -131,6 +137,8 @@ public class PrestazioniActivity extends AppCompatActivity {
         }
     });
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,13 +162,8 @@ public class PrestazioniActivity extends AppCompatActivity {
         prestazioniList = (RecyclerView) findViewById(R.id.prestazioni_list);
 
         // Inizializzazione bluetooth
-        bluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
-        //Verifica delle presenza del bluetooth
-        if(!bluetoothAdapter.isEnabled())
-        {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent,REQUEST_ENABLE_BLUETOOTH);
-        }
+
+
 
         //Gestione del tasto di termina Pianificazione
         terminaPianificazione = (Chip) findViewById(R.id.termina_pianificazione);
@@ -230,12 +233,148 @@ public class PrestazioniActivity extends AppCompatActivity {
         });
     }
 
+
+
+
     //definizione del metodo per il riempimento della lista
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni) { //@NonNull specifica che il metodo non potrà mai restituire null
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, itemPrestazioni));
     }
 
-    public static class SimpleItemRecyclerViewAdapter
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            ProgressBar progressBar = (ProgressBar) blueDialogList.findViewById(R.id.progressBar);
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                //discovery starts, we can show progress dialog or perform other tasks
+                progressBar.setVisibility(View.VISIBLE);
+
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //discovery finishes, dismis progress dialog
+                progressBar.setVisibility(View.GONE);
+
+            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                bluetoothDevicesTrovati.add(device);
+                devicesTrovati.add(device.getName());
+                arrayAdapter.notifyDataSetChanged();
+
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //Check what request we’re responding to//
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+
+            //If the request was successful…//
+            if (resultCode == Activity.RESULT_OK) {
+                //...then display the following toast.//
+                Toast.makeText(PrestazioniActivity.this, "YES", Toast.LENGTH_LONG).show();
+                modalitaInserimentoDialog.cancel();
+                blueDialogList = new Dialog(PrestazioniActivity.this);
+                blueDialogList.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                blueDialogList.setTitle("Bluetooth");
+                blueDialogList.setContentView(R.layout.bluetooth);
+                listaDispositivi = (ListView) blueDialogList.findViewById(R.id.lista_dispositivi);
+                ProgressBar progressBar = (ProgressBar) blueDialogList.findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.GONE);
+                Button scan = (Button) blueDialogList.findViewById(R.id.scan);
+
+                    scan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            bluetoothAdapter.cancelDiscovery();
+                            IntentFilter filter = new IntentFilter();
+                            filter.addAction(BluetoothDevice.ACTION_FOUND);
+                            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+                            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+                            registerReceiver(mReceiver, filter);
+                            devicesTrovati = new ArrayList<String>();
+                            bluetoothDevicesTrovati = new ArrayList<BluetoothDevice>();
+                            bluetoothAdapter.startDiscovery();
+                            arrayAdapter = new ArrayAdapter<String>(PrestazioniActivity.this, android.R.layout.simple_list_item_1, devicesTrovati);
+                            listaDispositivi.setAdapter(arrayAdapter);
+                        }
+                    });
+
+
+
+                listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                        stato = (TextView) blueDialogList.findViewById(R.id.stato);
+                        stato.setText("Connessione");
+
+
+                        blueDialogList.cancel();
+                        inserimentoBlueBialog = new Dialog(view.getContext());
+                        inserimentoBlueBialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        inserimentoBlueBialog.setTitle("Bluetooth");
+                        inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
+                        stato = (TextView) blueDialogList.findViewById(R.id.stato);
+
+                        Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                        conferma.setTextColor(Color.GRAY);
+                        conferma.setClickable(false);
+                        Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
+                        valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
+                        EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);
+
+                        //TODO ANGELO
+                        conferma.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (dato_arrivato == true) {
+                                    dato_arrivato = false;
+                                    Toast.makeText(v.getContext(), "dati salvati correttamente", Toast.LENGTH_LONG).show();
+                                    clientClass.cancel();
+
+                                    inserimentoBlueBialog.cancel();
+                                } else {
+                                    Toast.makeText(v.getContext(), "dati in ricezione, ATTENDERE", Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        });
+                        annulla.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                inserimentoBlueBialog.cancel();
+                            }
+                        });
+                        clientClass = new ClientClass(bluetoothDevicesTrovati.get(position));
+                        clientClass.start();
+                        dati = new ArrayList<>();
+                        stato.setText("Connesione");
+                        inserimentoBlueBialog.show();
+
+
+                    }
+                });
+
+                blueDialogList.show();
+            }
+
+            //If the request was unsuccessful...//
+            if(resultCode == RESULT_CANCELED){
+
+                //...then display this alternative toast.//
+                Toast.makeText(getApplicationContext(), "Errore nell'accensione del Bluetooth",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final PrestazioniActivity mParentActivity;
@@ -272,91 +411,29 @@ public class PrestazioniActivity extends AppCompatActivity {
                     modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
                     modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
 
-                    cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+
                     cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
+                    cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+                    bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    if(bluetoothAdapter != null) {
 
-                    cBlu.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            modalitaInserimentoDialog.cancel();
-                            blueDialogList = new Dialog(v.getContext());
-                            blueDialogList.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            blueDialogList.setTitle("Bluetooth");
-                            blueDialogList.setContentView(R.layout.bluetooth);
-                            listaDispositivi = (ListView) blueDialogList.findViewById(R.id.lista_dispositivi);
-                            Set<BluetoothDevice> bt=bluetoothAdapter.getBondedDevices();
-                            String[] strings=new String[bt.size()];
-                            btArray=new BluetoothDevice[bt.size()];
-                            int index=0;
 
-                            if( bt.size()>0)
-                            {
-                                for(BluetoothDevice device : bt)
-                                {
-                                    btArray[index]= device;
-                                    strings[index]=device.getName();
-                                    index++;
-                                }
-                                ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(v.getContext(),android.R.layout.simple_list_item_1,strings);
-                                listaDispositivi.setAdapter(arrayAdapter);
+                        cBlu.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+
+
+
                             }
-
-                            listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                                    stato = (TextView) blueDialogList.findViewById(R.id.stato);
-                                    stato.setText("Connessione");
-
-
-                                        blueDialogList.cancel();
-                                        inserimentoBlueBialog = new Dialog(view.getContext());
-                                        inserimentoBlueBialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                        inserimentoBlueBialog.setTitle("Bluetooth");
-                                        inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
-                                        stato = (TextView) blueDialogList.findViewById(R.id.stato);
-
-                                         Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
-                                         conferma.setTextColor(Color.GRAY);
-                                         conferma.setClickable(false);
-                                        Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
-                                        valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
-                                        EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);
-
-                                        //TODO ANGELO
-                                        conferma.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if(dato_arrivato == true){
-                                                    dato_arrivato = false;
-                                                    Toast.makeText(v.getContext(),"dati salvati correttamente",Toast.LENGTH_LONG).show();
-                                                    clientClass.cancel();
-
-                                                    inserimentoBlueBialog.cancel();
-                                                }else{
-                                                    Toast.makeText(v.getContext(),"dati in ricezione, ATTENDERE",Toast.LENGTH_LONG).show();
-                                                }
-
-                                            }
-                                        });
-                                        annulla.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                inserimentoBlueBialog.cancel();
-                                            }
-                                        });
-                                        clientClass=new ClientClass(btArray[position]);
-                                        clientClass.start();
-                                        dati = new ArrayList<>();
-                                        stato.setText("Connesione");
-                                        inserimentoBlueBialog.show();
-
-
-                                }
-                            });
-
-                            blueDialogList.show();
-                        }
-                    });
+                        });
+                    }else{
+                        cBlu.setVisibility(View.GONE);
+                        Toast.makeText(v.getContext(),"Il divice non e' dotato di bluetooth",Toast.LENGTH_LONG).show();
+                        cMan.setPadding(5,0,5,0);
+                    }
 
                     cMan.setOnClickListener(new View.OnClickListener() {
                         @Override

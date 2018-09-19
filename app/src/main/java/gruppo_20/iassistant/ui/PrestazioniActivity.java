@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +61,7 @@ public class PrestazioniActivity extends AppCompatActivity {
     private String orarioVisita;
     private String cognomeNomePaziente;
     private String idPaziente;
+    private static Visita visita;
 
     private static Chip cBlu;
     private static Chip cMan;
@@ -183,7 +186,7 @@ public class PrestazioniActivity extends AppCompatActivity {
         dbRefVisita.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Visita visita = dataSnapshot.getValue(Visita.class);
+                visita = dataSnapshot.getValue(Visita.class);
                 int prestazioniDaSvolgere = visita.contaPrestazioniDaSvolgere();
                 if(prestazioniDaSvolgere == 0){
                     numPrestazioniDaSvolgere.setText(getResources().getString(R.string.nessunaPrestazione) + " da svolgere");
@@ -250,15 +253,16 @@ public class PrestazioniActivity extends AppCompatActivity {
             mParentActivity = parent;
         }
 
+        @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.prestazione_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final SimpleItemRecyclerViewAdapter.ViewHolder holder, final int position) {
             holder.mNomePrestazione.setText(mValues.get(position).getNomePrestazione());
 
             if(mValues.get(position).isEffectuated()){
@@ -267,48 +271,47 @@ public class PrestazioniActivity extends AppCompatActivity {
             }
             holder.mNumPrestazione.setText("" + (position + 1));
 
-            holder.mNomePrestazione.setOnClickListener(new View.OnClickListener() {
+            holder.mlayoutPrestazine.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    modalitaInserimentoDialog = new Dialog(v.getContext());
-                    modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
-                    modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
+                    if (visita.getStato() != Stato.Terminato) {
+                        modalitaInserimentoDialog = new Dialog(v.getContext());
+                        modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
+                        modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
 
-                    cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
-                    cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
+                        cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+                        cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
 
-                    cBlu.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            modalitaInserimentoDialog.cancel();
-                            blueDialogList = new Dialog(v.getContext());
-                            blueDialogList.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            blueDialogList.setTitle("Bluetooth");
-                            blueDialogList.setContentView(R.layout.bluetooth);
-                            listaDispositivi = (ListView) blueDialogList.findViewById(R.id.lista_dispositivi);
-                            Set<BluetoothDevice> bt=bluetoothAdapter.getBondedDevices();
-                            String[] strings=new String[bt.size()];
-                            btArray=new BluetoothDevice[bt.size()];
-                            int index=0;
+                        cBlu.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                modalitaInserimentoDialog.cancel();
+                                blueDialogList = new Dialog(v.getContext());
+                                blueDialogList.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                blueDialogList.setTitle("Bluetooth");
+                                blueDialogList.setContentView(R.layout.bluetooth);
+                                listaDispositivi = (ListView) blueDialogList.findViewById(R.id.lista_dispositivi);
+                                Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
+                                String[] strings = new String[bt.size()];
+                                btArray = new BluetoothDevice[bt.size()];
+                                int index = 0;
 
-                            if( bt.size()>0)
-                            {
-                                for(BluetoothDevice device : bt)
-                                {
-                                    btArray[index]= device;
-                                    strings[index]=device.getName();
-                                    index++;
+                                if (bt.size() > 0) {
+                                    for (BluetoothDevice device : bt) {
+                                        btArray[index] = device;
+                                        strings[index] = device.getName();
+                                        index++;
+                                    }
+                                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, strings);
+                                    listaDispositivi.setAdapter(arrayAdapter);
                                 }
-                                ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(v.getContext(),android.R.layout.simple_list_item_1,strings);
-                                listaDispositivi.setAdapter(arrayAdapter);
-                            }
 
-                            listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                                    stato = (TextView) blueDialogList.findViewById(R.id.stato);
-                                    stato.setText("Connessione");
+                                listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                                        stato = (TextView) blueDialogList.findViewById(R.id.stato);
+                                        stato.setText("Connessione");
 
 
                                         blueDialogList.cancel();
@@ -318,9 +321,9 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
                                         stato = (TextView) blueDialogList.findViewById(R.id.stato);
 
-                                         Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
-                                         conferma.setTextColor(Color.GRAY);
-                                         conferma.setClickable(false);
+                                        Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                                        conferma.setTextColor(Color.GRAY);
+                                        conferma.setClickable(false);
                                         Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
                                         valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
                                         EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);
@@ -329,14 +332,14 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         conferma.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if(dato_arrivato == true){
+                                                if (dato_arrivato) {
                                                     dato_arrivato = false;
-                                                    Toast.makeText(v.getContext(),"dati salvati correttamente",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(v.getContext(), "dati salvati correttamente", Toast.LENGTH_LONG).show();
                                                     clientClass.cancel();
 
                                                     inserimentoBlueBialog.cancel();
-                                                }else{
-                                                    Toast.makeText(v.getContext(),"dati in ricezione, ATTENDERE",Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    Toast.makeText(v.getContext(), "dati in ricezione, ATTENDERE", Toast.LENGTH_LONG).show();
                                                 }
 
                                             }
@@ -347,51 +350,52 @@ public class PrestazioniActivity extends AppCompatActivity {
                                                 inserimentoBlueBialog.cancel();
                                             }
                                         });
-                                        clientClass=new ClientClass(btArray[position]);
+                                        clientClass = new ClientClass(btArray[position]);
                                         clientClass.start();
                                         dati = new ArrayList<>();
                                         stato.setText("Connesione");
                                         inserimentoBlueBialog.show();
 
 
-                                }
-                            });
+                                    }
+                                });
 
-                            blueDialogList.show();
-                        }
-                    });
+                                blueDialogList.show();
+                            }
+                        });
 
-                    cMan.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            modalitaInserimentoDialog.cancel();
-                            inserimentoDialog = new Dialog(v.getContext());
-                            inserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            inserimentoDialog.setTitle("Inserisci Risultato");
-                            inserimentoDialog.setContentView(R.layout.inserimento_dati);
+                        cMan.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                modalitaInserimentoDialog.cancel();
+                                inserimentoDialog = new Dialog(v.getContext());
+                                inserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                inserimentoDialog.setTitle("Inserisci Risultato");
+                                inserimentoDialog.setContentView(R.layout.inserimento_dati);
 
-                            Button conferma = (Button) inserimentoDialog.findViewById(R.id.conferma_button_manual);
-                            Button annulla = (Button) inserimentoDialog.findViewById(R.id.button_annulla);
-                            TextView dato = (TextView)  inserimentoDialog.findViewById(R.id.datoInserito);
-                            EditText noteInserite = (EditText)  inserimentoDialog.findViewById(R.id.noteInserite);
+                                Button conferma = (Button) inserimentoDialog.findViewById(R.id.conferma_button_manual);
+                                Button annulla = (Button) inserimentoDialog.findViewById(R.id.button_annulla);
+                                TextView dato = (TextView) inserimentoDialog.findViewById(R.id.datoInserito);
+                                EditText noteInserite = (EditText) inserimentoDialog.findViewById(R.id.noteInserite);
 
-                            //TODO ANGELO
-                            conferma.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    // salvare nel database il valore contenuto nella TextView dato, e nella EditText noteInserite controlllare se sono presenti
-                                }
-                            });
-                            annulla.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    inserimentoDialog.cancel();
-                                }
-                            });
-                            inserimentoDialog.show();
-                        }
-                    });
-                    modalitaInserimentoDialog.show();
+                                //TODO ANGELO
+                                conferma.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        // salvare nel database il valore contenuto nella TextView dato, e nella EditText noteInserite controlllare se sono presenti
+                                    }
+                                });
+                                annulla.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        inserimentoDialog.cancel();
+                                    }
+                                });
+                                inserimentoDialog.show();
+                            }
+                        });
+                        modalitaInserimentoDialog.show();
+                    }
                 }
             });
         }
@@ -403,11 +407,13 @@ public class PrestazioniActivity extends AppCompatActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             final Button mNumPrestazione;
             final TextView mNomePrestazione;
+            final LinearLayout mlayoutPrestazine;
 
             ViewHolder(View view) {
                 super(view);
                 mNumPrestazione = (Button) view.findViewById(R.id.numeroPrestazione);
                 mNomePrestazione = (TextView) view.findViewById(R.id.nomePrestazione);
+                mlayoutPrestazine = (LinearLayout) view.findViewById(R.id.pianificazioniListContent);
             }
         }
     }

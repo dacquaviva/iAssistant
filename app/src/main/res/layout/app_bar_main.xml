@@ -41,7 +41,6 @@
             android:background="@android:color/transparent"
             android:focusable="false"
             android:gravity="center"
-            android:onClick="giornoPrecedente"
             android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/arrow_left" />
 
@@ -66,7 +65,6 @@
             android:gravity="center"
             android:tint="@color/colorPrimary"
             android:focusable="false"
-            android:onClick="giornoSuccessivo"
             app:srcCompat="@drawable/arrow_right" />
 
     </LinearLayout>

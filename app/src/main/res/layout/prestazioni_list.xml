@@ -39,7 +39,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
-        android:text="Termina"
+        android:text="@string/termina"
         android:visibility="invisible"
         app:chipIcon="@drawable/termina_pianificazione_24dp"
         app:layout_constraintEnd_toEndOf="parent"

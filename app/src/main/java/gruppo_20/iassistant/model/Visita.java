@@ -2,12 +2,16 @@ package gruppo_20.iassistant.model;
 
 import java.util.ArrayList;
 
+//Classe che permette di implementare la Visita dell'operatore al paziente.
 public class Visita {
     private String idPaziente;
     private ArrayList <Prestazione> prestazioni;
     private Stato stato;
     private String orario;
     private String data;
+
+    public Visita() {
+    }
 
     public String getData() {
         return data;
@@ -25,29 +29,13 @@ public class Visita {
         this.orario = orario;
     }
 
-    public Visita() {
-    }
-
-    public Visita(String idPaziente, ArrayList<Prestazione> prestazioni, Stato stato) {
-        this.idPaziente = idPaziente;
-        this.prestazioni = prestazioni;
-        this.stato = stato;
-    }
 
     public String getIdPaziente() {
         return idPaziente;
     }
 
-    public void setPaziente(String idPaziente) {
-        this.idPaziente = idPaziente;
-    }
-
     public ArrayList<Prestazione> getPrestazioni() {
         return prestazioni;
-    }
-
-    public void setPrestazioni(ArrayList<Prestazione> prestazioni) {
-        this.prestazioni = prestazioni;
     }
 
     public Stato getStato() {
@@ -58,6 +46,7 @@ public class Visita {
         this.stato = stato;
     }
 
+    //Conta il numero di prestazioni da svolgere ancora all'interno della visita
     public int contaPrestazioniDaSvolgere(){
         int count =0;
         for (Prestazione prestazione : this.prestazioni){

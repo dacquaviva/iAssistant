@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
+import gruppo_20.iassistant.model.InternetConnection;
 import gruppo_20.iassistant.model.Operatore;
 import gruppo_20.iassistant.model.Paziente;
 
@@ -45,15 +47,16 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,DatePickerDialog.OnDateSetListener {
 
 
-    final Calendar calendarIstanceOfToday = Calendar.getInstance();
-
-
     // Variabili per Firebase
     private final String idOperatore = FirebaseAuth.getInstance().getUid();
     private String eMailOperatore = FirebaseAuth.getInstance().getCurrentUser().getEmail();
     private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
     private final DatabaseReference dbRefVisite = dbRefOperatore.child("visite");
     private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
+    private ComplexRecyclerViewAdapter recycleViewLista;
+    private String dataSelezionata;
+    RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +95,16 @@ public class MainActivity extends AppCompatActivity
 
         //caricamento visite successive alla data odierna
         List<Object> lista = new ArrayList<>();
-        String dateOfToday = setCalendarToString(calendarIstanceOfToday);
-        caricaProssimiTreGiorni(lista,dateOfToday,4,7);
+        dataSelezionata = setCalendarToString(Calendar.getInstance());
+        caricaProssimiTreGiorni(lista, dataSelezionata,4,7);
 
     }
 
 
     //Riempimento dati della lista delle pianificazioni
     private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Object> lista) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new ComplexRecyclerViewAdapter(lista));
+        recycleViewLista = new ComplexRecyclerViewAdapter(lista);
+        recyclerView.setAdapter(recycleViewLista);
     }
 
     @Override
@@ -108,7 +112,9 @@ public class MainActivity extends AppCompatActivity
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, monthOfYear, dayOfMonth);
         List<Object> lista = new ArrayList<>();
-        caricaProssimiTreGiorni(lista,setCalendarToString(calendar),4,7);
+        dataSelezionata = setCalendarToString(calendar);
+        caricaProssimiTreGiorni(lista, dataSelezionata,4,7);
+
     }
 
     @Override
@@ -133,11 +139,12 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
+        Calendar calendarIstanceOfToday = Calendar.getInstance();
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.menu_item_data_picker) {
             DatePickerDialog dataDialog = DatePickerDialog.newInstance( MainActivity.this,
+
                     calendarIstanceOfToday.get(Calendar.YEAR),
                     calendarIstanceOfToday.get(Calendar.MONTH),
                     calendarIstanceOfToday.get(Calendar.DAY_OF_MONTH));
@@ -153,7 +160,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -224,10 +231,13 @@ public class MainActivity extends AppCompatActivity
 
     private void caricaProssimiTreGiorni(final List<Object> lista, final String dataVisita, final int numGiorni,final int numMaxGiorni){
 
-        dbRefVisite.child(dataVisita).addValueEventListener(new ValueEventListener() {
+        DatabaseReference dbRefVisita = dbRefVisite.child(dataVisita);
+        dbRefVisita.keepSynced(true);
+        dbRefVisita.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> listaRiempita =  lista;
+                 List<Object> listaRiempita =  lista;
                 String nextDate=dataVisita;
                 int giorniLettiPieni = numGiorni;
                 int giorniLettiVuoti = numMaxGiorni;
@@ -276,7 +286,9 @@ public class MainActivity extends AppCompatActivity
                         caricaProssimiTreGiorni(listaRiempita,nextDate, giorniLettiPieni,giorniLettiVuoti);
                     }
                 }else{
-                    final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+                    if(!InternetConnection.haveInternetConnection(MainActivity.this))
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.problemiDiConnessione),Toast.LENGTH_LONG).show();
+                    recyclerView = (RecyclerView) findViewById(R.id.item_list);
                     assert recyclerView != null;
                     setupRecyclerView(recyclerView, lista);
                 }
@@ -298,6 +310,10 @@ public class MainActivity extends AppCompatActivity
 
         public ComplexRecyclerViewAdapter(List<Object> items) {
             this.items = items;
+        }
+
+        private void azzeraRecycleView(){
+            this.items = null;
         }
 
         @Override
@@ -355,6 +371,7 @@ public class MainActivity extends AppCompatActivity
             dbRefPazienti.child(((Visita)items.get(position)).getIdPaziente()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     final Paziente paziente = dataSnapshot.getValue(Paziente.class);
                     visiteHolder.getmNomePaziente().setText(paziente.getCognome() + " " + paziente.getNome());
                     visiteHolder.getmTelefono().setText(paziente.getTelefono());
@@ -368,6 +385,7 @@ public class MainActivity extends AppCompatActivity
                             intent.putExtra("dataVisita", ((Visita)items.get(position)).getData());
                             intent.putExtra("orarioVisita", ((Visita)items.get(position)).getOrario());
                             view.getContext().startActivity(intent);
+
                         }
                     });
 
@@ -469,5 +487,13 @@ public class MainActivity extends AppCompatActivity
             else
                 return 0;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recyclerView.setAdapter(null);
+            caricaProssimiTreGiorni(new ArrayList<Object>(), dataSelezionata,4,7);
+
     }
 }

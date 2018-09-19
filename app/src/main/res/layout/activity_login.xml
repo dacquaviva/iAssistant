@@ -23,7 +23,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:fontFamily="serif"
-        android:text="iAssistant"
+        android:text="@string/iassistant"
         android:textColor="@android:color/darker_gray"
         android:textSize="36sp"
         android:textStyle="bold|italic"

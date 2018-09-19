@@ -1,15 +1,11 @@
 package gruppo_20.iassistant.model;
 
+//Classe che permette di instanziare l'operatore sanitario
 public class Operatore extends Persona{
     private String professione;
 
     public Operatore(){
 
-    }
-
-    public Operatore(String nome, String cognome, String codice_fiscale, String dataNascita, String luogoNascita, String cittaResidenza, String residenza, String telefono, String professione) {
-        super(nome, cognome, codice_fiscale, dataNascita, luogoNascita, cittaResidenza, residenza, telefono);
-        this.professione = professione;
     }
 
     public void setProfessione(String professione) {

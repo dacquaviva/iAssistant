@@ -64,7 +64,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.pianifications));
         setSupportActionBar(toolbar);
+
+        Intent service = new Intent(MainActivity.this, NotificaPianificazioni.class);
+        service.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainActivity.this.startService(service);
 
         //Inizializzata Navigation View
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

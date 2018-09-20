@@ -25,6 +25,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import gruppo_20.iassistant.R;
 
@@ -134,6 +140,32 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    String idOperatore = mAuth.getCurrentUser().getUid();
+
+                                    FileOutputStream fOut = null;
+                                    try {
+                                        fOut = openFileOutput("ID_operatore.txt",MODE_PRIVATE);
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    OutputStreamWriter osw = new OutputStreamWriter(fOut);
+
+                                    try {
+                                        osw.write(idOperatore);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        osw.flush();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        osw.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     startActivity(intent);
                                     finish();
                                 }

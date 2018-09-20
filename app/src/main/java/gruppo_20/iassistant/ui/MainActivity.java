@@ -64,6 +64,10 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent service = new Intent(MainActivity.this, NotificaPianificazioni.class);
+        service.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainActivity.this.startService(service);
+
         //Inizializzata Navigation View
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -217,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private String setCalendarToString(Calendar calendar) {
+    public static String setCalendarToString(Calendar calendar) {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);

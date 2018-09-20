@@ -31,7 +31,7 @@
             <item
                 android:id="@+id/nav_associatedDevices"
                 android:icon="@drawable/ic_devices_other_black_24dp"
-                android:title="@string/associatedDevices" />
+                android:title="@string/simulatore_dispositivo" />
             <item
                 android:id="@+id/nav_logOut"
                 android:icon="@drawable/ic_exit_to_app_black_24dp"

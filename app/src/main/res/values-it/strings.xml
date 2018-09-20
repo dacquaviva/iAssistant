@@ -32,6 +32,7 @@
     <string name="problemiDiConnessione">Problemi di connessione</string>
     <string name="risultatoVuoto">Il risultato non puo essere vuoto</string>
     <string name="nessunaNota">Nessuna nota</string>
+    <string name="simulatore_dispositivo">Simulatore dispositivi</string>
 
     <plurals name="prestazioni">
         <item quantity="one">%d prestazione</item>

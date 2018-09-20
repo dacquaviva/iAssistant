@@ -84,4 +84,5 @@
     <string name="num_di_telefono_operatore">Telephone number:</string>
     <string name="action_back">action back</string>
     <string name="nessunaNota">Nessuna nota</string>
+    <string name="simulatore_dispositivo">Dummy devices</string>
 </resources>

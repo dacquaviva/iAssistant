@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myAccount) {
             startActivity(new Intent(MainActivity.this, InfoOperatoreActivity.class));
         } else if (id == R.id.nav_associatedDevices) {
+            startActivity(new Intent(MainActivity.this, SimulaDispositiviActivity.class));
 
         } else if (id == R.id.nav_logOut) {
             FirebaseAuth.getInstance().signOut();

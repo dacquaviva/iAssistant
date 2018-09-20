@@ -56,8 +56,14 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.959"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lista_dispositivi" />
+        app:layout_constraintTop_toBottomOf="@+id/lista_dispositivi"
+        app:layout_constraintVertical_bias="0.0"
+        android:background="@android:color/transparent"
+        android:text="scan"
+        android:elevation="0dp"
+        android:textColor="@color/colorAccent"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

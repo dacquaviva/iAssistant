@@ -12,6 +12,7 @@ public class Punto implements Serializable{
         this.x = x;
         this.y = y;
         this.terminatore = terminatore;
+        this.flusso = flusso;
     }
 
     public float getX() {

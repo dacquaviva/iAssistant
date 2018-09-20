@@ -13,7 +13,6 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.bottomappbar.BottomAppBar;
 import android.support.design.chip.Chip;
 import android.support.design.widget.FloatingActionButton;
@@ -108,8 +107,9 @@ public class PrestazioniActivity extends AppCompatActivity {
     
     private static final UUID MY_UUID=UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66");
     private static boolean dato_arrivato = false;
+    private boolean connesso = false;
 
-    private static Handler handler=new Handler(new Handler.Callback() {
+    private  Handler handler=new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
 
@@ -117,25 +117,75 @@ public class PrestazioniActivity extends AppCompatActivity {
             {
                 case STATE_LISTENING:
                     stato.setText("Listening");
+                    connesso = false;
                     break;
                 case STATE_CONNECTING:
                     stato.setText("Connecting");
+                    connesso = false;
                     break;
                 case STATE_CONNECTED:
                     stato.setText("Connected");
+                    connesso = true;
                     break;
                 case STATE_CONNECTION_FAILED:
-                    stato.setText("Connection Failed");
+                    connesso = false;;
                     break;
                 case STATE_MESSAGE_RECEIVED:
+                    connesso = true;
                     Punto dato  = (Punto) msg.obj;
+                    LineChart graficoView = (LineChart) inserimentoBlueBialog.findViewById(R.id.graficoBluetooth);
+                    valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
                     if (dato.isTerminatore()) {
+
+                        ProgressBar progressBarBluetoooth = (ProgressBar) inserimentoBlueBialog.findViewById(R.id.progressBarBluetooth);
+                        progressBarBluetoooth.setVisibility(View.GONE);
                         Button confermaBtn = (Button)  inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
                         confermaBtn.setTextColor(Color.rgb(55,207,221));
                         confermaBtn.setClickable(true);
                         dato_arrivato = true;
-                    }
-                    dati.add(dato);
+                        dati.add(dato);
+
+                        ArrayList<Entry> datiBluetooth = new ArrayList<Entry>();
+
+                        for(Punto punto : dati){
+                            datiBluetooth.add(new Entry(punto.getX(),punto.getY()));
+
+                        }
+
+
+                        if(dato.isFlusso() == true ){
+                            valorOttenutoBlu.setVisibility(View.GONE);
+                            graficoView.setVisibility(View.VISIBLE);
+                            LineDataSet lineData = new LineDataSet(datiBluetooth,"Risultato");
+                            lineData.setLineWidth(2);
+                            ArrayList<ILineDataSet> iLineDataSet = new ArrayList<>();
+                            iLineDataSet.add(lineData);
+                            LineData data = new LineData(iLineDataSet);
+                            graficoView.setData(data);
+                            Description description = new Description();
+                            description.setEnabled(false);
+                            graficoView.setDescription(description);
+                            graficoView.invalidate();
+
+
+                        }else{
+
+                            valorOttenutoBlu.setText("" + dati.get(0).getY());
+
+                            graficoView.setVisibility(View.GONE);
+                            valorOttenutoBlu.setVisibility(View.VISIBLE);
+                        }
+
+
+
+
+                    }else if(dati.get(dati.size()-1).isTerminatore()){
+                        dati.clear();
+
+                        }else{
+                            dati.add(dato);
+                        }
+
 
                     break;
             }
@@ -167,7 +217,6 @@ public class PrestazioniActivity extends AppCompatActivity {
         dbRefVisita = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore).child("visite").child(dataVisita).child(orarioVisita);
         prestazioniList = (RecyclerView) findViewById(R.id.prestazioni_list);
 
-        // Inizializzazione bluetooth
 
 
 
@@ -286,20 +335,21 @@ public class PrestazioniActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         //Check what request we’re responding to//
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
 
             //If the request was successful…//
             if (resultCode == Activity.RESULT_OK) {
                 //...then display the following toast.//
-                Toast.makeText(PrestazioniActivity.this, "YES", Toast.LENGTH_LONG).show();
+
                 modalitaInserimentoDialog.cancel();
                 blueDialogList = new Dialog(PrestazioniActivity.this);
                 blueDialogList.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 blueDialogList.setTitle("Bluetooth");
                 blueDialogList.setContentView(R.layout.bluetooth);
                 listaDispositivi = (ListView) blueDialogList.findViewById(R.id.lista_dispositivi);
+                //TODO controlla la progresBar il GONE
                 ProgressBar progressBar = (ProgressBar) blueDialogList.findViewById(R.id.progressBar);
                 devicesTrovati = new ArrayList<String>();
                 bluetoothDevicesTrovati = new ArrayList<BluetoothDevice>();
@@ -321,57 +371,77 @@ public class PrestazioniActivity extends AppCompatActivity {
 
                 listaDispositivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                        stato = (TextView) blueDialogList.findViewById(R.id.stato);
-                        stato.setText("Connessione");
+                    public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                       if( clientClass!=null && clientClass.getDevice() != bluetoothDevicesTrovati.get(position)){
+                           sendReceive.cancel();
+                           clientClass.cancel();
+                           connesso = false;
+                           clientClass = new ClientClass(bluetoothDevicesTrovati.get(position));
+                           clientClass.start();
+                       }
+
+                        if(connesso==true){
+                            stato = (TextView) blueDialogList.findViewById(R.id.stato);
+                            stato.setText("Connessione");
 
 
-                        blueDialogList.cancel();
-                        inserimentoBlueBialog = new Dialog(view.getContext());
-                        inserimentoBlueBialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        inserimentoBlueBialog.setTitle("Bluetooth");
-                        inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
-                        final ProgressBar progressBarBluetoooth = (ProgressBar) inserimentoBlueBialog.findViewById(R.id.progressBarBluetooth);
-                        stato = (TextView) blueDialogList.findViewById(R.id.stato);
+                            blueDialogList.cancel();
+                            inserimentoBlueBialog = new Dialog(view.getContext());
+                            inserimentoBlueBialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            inserimentoBlueBialog.setTitle("Bluetooth");
+                            inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
+                            final ProgressBar progressBarBluetoooth = (ProgressBar) inserimentoBlueBialog.findViewById(R.id.progressBarBluetooth);
+                            LineChart graficoView = (LineChart) inserimentoBlueBialog.findViewById(R.id.graficoBluetooth);
+                            TextView valoreOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
+                            valoreOttenutoBlu.setVisibility(View.GONE);
+                            graficoView.setVisibility(View.GONE);
+                            stato = (TextView) blueDialogList.findViewById(R.id.stato);
 
-                        Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
-                        conferma.setTextColor(Color.GRAY);
-                        conferma.setClickable(false);
-                        Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
-                        valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
-                        EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);
+                            Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
+                            conferma.setTextColor(Color.GRAY);
+                            conferma.setClickable(false);
+                            Button annulla = (Button) inserimentoBlueBialog.findViewById(R.id.button_riesegui);
+                            valorOttenutoBlu = (TextView) inserimentoBlueBialog.findViewById(R.id.valorOttenutoBlu);
 
-                        //TODO ANGELO
-                        conferma.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (dato_arrivato == true) {
-                                    dato_arrivato = false;
-                                    progressBarBluetoooth.setVisibility(View.GONE);
-                                    Toast.makeText(v.getContext(), "dati salvati correttamente", Toast.LENGTH_LONG).show();
-                                    clientClass.cancel();
+                            EditText noteInserite = (EditText) inserimentoBlueBialog.findViewById(R.id.noteInserite);
 
-                                    //MOSTRA QUI IL VALORE
-                                    dati.clear();
+                            conferma.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (dato_arrivato == true) {
+                                        dato_arrivato = false;
+                                        progressBarBluetoooth.setVisibility(View.GONE);
+                                        Toast.makeText(v.getContext(), "dati salvati correttamente", Toast.LENGTH_LONG).show();
+                                        ArrayList<Entry> datiBluetooth = new ArrayList<Entry>();
 
-                                    inserimentoBlueBialog.cancel();
-                                } else {
-                                    Toast.makeText(v.getContext(), "dati in ricezione, ATTENDERE", Toast.LENGTH_LONG).show();
+
+                                        for(Punto punto : dati){
+                                            datiBluetooth.add(new Entry(punto.getX(),punto.getY()));
+
+                                        }
+                                        //    int pos = data.getIntExtra("posizione",0);
+                                        dbRefVisita.child("prestazioni").child("" + position).child("risultato").setValue(datiBluetooth);
+
+                                        dati.clear();
+                                        inserimentoBlueBialog.cancel();
+                                    } else {
+                                        Toast.makeText(v.getContext(), "dati in ricezione, ATTENDERE", Toast.LENGTH_LONG).show();
+                                    }
+
                                 }
+                            });
+                            annulla.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    inserimentoBlueBialog.cancel();
+                                }
+                            });
 
-                            }
-                        });
-                        annulla.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                inserimentoBlueBialog.cancel();
-                            }
-                        });
-                        clientClass = new ClientClass(bluetoothDevicesTrovati.get(position));
-                        clientClass.start();
-                        dati = new ArrayList<>();
-                        stato.setText("Connesione");
-                        inserimentoBlueBialog.show();
+                            dati = new ArrayList<>();
+                            stato.setText("Connesione");
+                            inserimentoBlueBialog.show();
+                        }
+
 
 
                     }
@@ -466,6 +536,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                                 public void onClick(View v) {
 
                                     Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                   // enableIntent.putExtra("posizione", position);
                                     startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
 
 
@@ -501,10 +572,8 @@ public class PrestazioniActivity extends AppCompatActivity {
                                         if (dato.getText().toString().equals("")) {
                                             Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto), Toast.LENGTH_LONG).show();
                                         } else {
-                                            Long currentTime = System.currentTimeMillis();
-                                            String stringCurrentTime = currentTime.toString();
-                                            stringCurrentTime = (String) stringCurrentTime.subSequence(stringCurrentTime.length() - 7, stringCurrentTime.length());
-                                            Entry entry = new Entry(Float.parseFloat(dato.getText().toString()), Float.parseFloat(stringCurrentTime));
+                                            float f = Float.parseFloat(dato.getText().toString());
+                                            Entry entry = new Entry(f, f);
                                             ArrayList<Entry> array = new ArrayList<Entry>();
                                             array.add(entry);
                                             Prestazione mValuesDaSalvare = mValues.get(position);
@@ -550,7 +619,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                             graficoView.invalidate();
                         }else{
                             graficoView.setVisibility(View.GONE);
-                            Float ris = mValues.get(position).getRisultato().get(0).getX();
+                            Float ris = mValues.get(position).getRisultato().get(0).getY();
                             risultatoTextView.setText(ris.toString());
 
                         }
@@ -587,6 +656,10 @@ public class PrestazioniActivity extends AppCompatActivity {
     {
         private BluetoothDevice device;
         private BluetoothSocket socket;
+
+        public BluetoothDevice getDevice() {
+            return device;
+        }
 
         public ClientClass (BluetoothDevice device1)
         {
@@ -658,18 +731,12 @@ public class PrestazioniActivity extends AppCompatActivity {
             }
         }
 
-
-        public void writeSerialized(Object p){
-
+        public void cancel() {
             try {
-                if(outputStream== null){
-                    outputStream=new  ObjectOutputStream(bluetoothSocket.getOutputStream());
-                }
+                outputStream.close();
+                bluetoothSocket.close();
 
-                outputStream.writeObject(p);
-
-            }catch(Exception e){
-
+            } catch (IOException e) {
             }
         }
     }

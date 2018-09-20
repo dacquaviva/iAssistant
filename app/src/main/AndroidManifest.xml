@@ -35,12 +35,15 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ui.AnagraficaActivity"
+        <activity
+            android:name=".ui.AnagraficaActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.InfoOperatoreActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.InfoOperatoreActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.SimulaDispositiviActivity"></activity>
     </application>
 
 </manifest>

@@ -31,6 +31,7 @@
     <string name="operazioneTerminataConSuccesso">Operazione terminata con successo</string>
     <string name="problemiDiConnessione">Problemi di connessione</string>
     <string name="risultatoVuoto">Il risultato non puo essere vuoto</string>
+    <string name="nessunaNota">Nessuna nota</string>
 
     <plurals name="prestazioni">
         <item quantity="one">%d prestazione</item>

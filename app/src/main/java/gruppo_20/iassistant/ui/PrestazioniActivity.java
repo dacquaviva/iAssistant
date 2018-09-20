@@ -36,7 +36,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,6 +52,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import gruppo_20.iassistant.R;
@@ -201,7 +206,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                 }
 
                 assert prestazioniList != null;
-                setupRecyclerView(prestazioniList, visita.getPrestazioni());
+                setupRecyclerView(prestazioniList, visita.getPrestazioni(),visita.getStato());
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -243,8 +248,8 @@ public class PrestazioniActivity extends AppCompatActivity {
 
 
     //definizione del metodo per il riempimento della lista
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, itemPrestazioni));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni, Stato statoVisita) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, itemPrestazioni,statoVisita));
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -411,11 +416,13 @@ public class PrestazioniActivity extends AppCompatActivity {
 
         private final PrestazioniActivity mParentActivity;
         private final List<Prestazione> mValues;
+        private final Stato mStatoVisita;
 
 
-        SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazione> items) {
+        SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazione> items, Stato statoVisita) {
             mValues = items;
             mParentActivity = parent;
+            mStatoVisita = statoVisita;
         }
 
         @Override
@@ -438,7 +445,7 @@ public class PrestazioniActivity extends AppCompatActivity {
             holder.mlayoutPrestazine.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!mValues.get(position).isEffectuated()){
+                    if (!mValues.get(position).isEffectuated() && dataVisita.equals(MainActivity.setCalendarToString(Calendar.getInstance()))){
                         modalitaInserimentoDialog = new Dialog(v.getContext());
                         modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
@@ -485,6 +492,9 @@ public class PrestazioniActivity extends AppCompatActivity {
                                 conferma.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        if(mStatoVisita.equals(Stato.Pianificato)){
+                                            dbRefVisita.child("stato").setValue(Stato.InCorso);
+                                        }
                                         if (dato.getText().toString().equals("")) {
                                             Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto), Toast.LENGTH_LONG).show();
                                         } else {
@@ -514,8 +524,34 @@ public class PrestazioniActivity extends AppCompatActivity {
                             }
                         });
                     modalitaInserimentoDialog.show();
-                    } else {
-                        //TODO visualizzazione risultati
+                    } else if(mValues.get(position).isEffectuated()){
+                        Dialog dialogRisultato =  new Dialog(v.getContext());
+                        dialogRisultato.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialogRisultato.setContentView(R.layout.visualizza_risultato_dialog);
+                        TextView note = (TextView) dialogRisultato.findViewById(R.id.note);
+                        TextView risultatoTextView = (TextView) dialogRisultato.findViewById(R.id.risultato);
+                        LineChart graficoView = (LineChart) dialogRisultato.findViewById(R.id.grafico);
+                        if (mValues.get(position).getRisultato().size()>1){
+                            risultatoTextView.setVisibility(View.GONE);
+                            ArrayList<Entry> risultatiList = mValues.get(position).getRisultato();
+                            LineDataSet lineDataSet = new LineDataSet(risultatiList,"Risultato");
+                            ArrayList<ILineDataSet> iLine = new ArrayList<>();
+                            iLine.add(lineDataSet);
+
+                            LineData data = new LineData(iLine);
+                            graficoView.setData(data);
+                            graficoView.invalidate();
+
+                        }else{
+                            graficoView.setVisibility(View.GONE);
+                            Float ris = mValues.get(position).getRisultato().get(0).getX();
+                            risultatoTextView.setText(ris.toString());
+
+                        }
+                        if(mValues.get(position).getDatiOpzionali() != null && !mValues.get(position).getDatiOpzionali().equals("")){
+                            note.setText(mValues.get(position).getDatiOpzionali());
+                        }
+                        dialogRisultato.show();
                     }
                 }//fine metodo onClick
 

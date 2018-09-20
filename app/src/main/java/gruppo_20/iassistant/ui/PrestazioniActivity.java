@@ -419,6 +419,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                                             datiBluetooth.add(new Entry(punto.getX(),punto.getY()));
 
                                         }
+                                        //TODO  SETTARE IL GIUSTO POSITION
                                         //    int pos = data.getIntExtra("posizione",0);
                                         dbRefVisita.child("prestazioni").child("" + position).child("risultato").setValue(datiBluetooth);
 

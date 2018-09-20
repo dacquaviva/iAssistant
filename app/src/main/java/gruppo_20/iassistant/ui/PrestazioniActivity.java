@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -62,7 +63,6 @@ import gruppo_20.iassistant.model.Visita;
 
 public class PrestazioniActivity extends AppCompatActivity {
 
-    private static FloatingActionButton fab;
     private static RecyclerView prestazioniList;
     private static android.support.design.bottomappbar.BottomAppBar but;
 
@@ -104,8 +104,7 @@ public class PrestazioniActivity extends AppCompatActivity {
     static final int STATE_MESSAGE_RECEIVED=5;
 
     int REQUEST_ENABLE_BLUETOOTH=1;
-
-    private static final String APP_NAME = "iAssistant";
+    
     private static final UUID MY_UUID=UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66");
     private static boolean dato_arrivato = false;
 
@@ -534,14 +533,17 @@ public class PrestazioniActivity extends AppCompatActivity {
                         if (mValues.get(position).getRisultato().size()>1){
                             risultatoTextView.setVisibility(View.GONE);
                             ArrayList<Entry> risultatiList = mValues.get(position).getRisultato();
-                            LineDataSet lineDataSet = new LineDataSet(risultatiList,"Risultato");
-                            ArrayList<ILineDataSet> iLine = new ArrayList<>();
-                            iLine.add(lineDataSet);
-
-                            LineData data = new LineData(iLine);
+                            LineDataSet lineData = new LineDataSet(risultatiList,"Risultato");
+                            lineData.setLineWidth(2);
+                            lineData.setCircleColor(getResources().getColor(R.color.colorPrimary));
+                            ArrayList<ILineDataSet> iLineDataSet = new ArrayList<>();
+                            iLineDataSet.add(lineData);
+                            LineData data = new LineData(iLineDataSet);
                             graficoView.setData(data);
+                            Description description = new Description();
+                            description.setEnabled(false);
+                            graficoView.setDescription(description);
                             graficoView.invalidate();
-
                         }else{
                             graficoView.setVisibility(View.GONE);
                             Float ris = mValues.get(position).getRisultato().get(0).getX();

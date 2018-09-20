@@ -45,13 +45,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import gruppo_20.iassistant.R;
 import gruppo_20.iassistant.model.Prestazione;
+import gruppo_20.iassistant.model.Punto;
 import gruppo_20.iassistant.model.Stato;
 import gruppo_20.iassistant.model.Visita;
 
@@ -85,7 +86,7 @@ public class PrestazioniActivity extends AppCompatActivity {
     private static BluetoothAdapter bluetoothAdapter;
     private static ArrayList<BluetoothDevice> bluetoothDevicesTrovati;
     private ArrayList<String> devicesTrovati;
-    private static ArrayList<String> dati;
+    private static ArrayList<Punto> dati;
     ArrayAdapter<String> arrayAdapter;
 
 
@@ -123,17 +124,15 @@ public class PrestazioniActivity extends AppCompatActivity {
                     stato.setText("Connection Failed");
                     break;
                 case STATE_MESSAGE_RECEIVED:
-                    byte[] readBuff= (byte[]) msg.obj;
-                    String tempMsg=new String(readBuff,0,msg.arg1);
-                    if (tempMsg.equals("-0101")) {
+                    Punto dato  = (Punto) msg.obj;
+                    if (dato.isTerminatore()) {
                         Button confermaBtn = (Button)  inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
                         confermaBtn.setTextColor(Color.rgb(55,207,221));
                         confermaBtn.setClickable(true);
                         dato_arrivato = true;
-                    }else{
-                        valorOttenutoBlu.setText(tempMsg);
-                        dati.add(tempMsg);
                     }
+                    dati.add(dato);
+
                     break;
             }
             return true;
@@ -328,6 +327,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                         inserimentoBlueBialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         inserimentoBlueBialog.setTitle("Bluetooth");
                         inserimentoBlueBialog.setContentView(R.layout.inserimento_dati_bluetooth);
+                        final ProgressBar progressBarBluetoooth = (ProgressBar) inserimentoBlueBialog.findViewById(R.id.progressBarBluetooth);
                         stato = (TextView) blueDialogList.findViewById(R.id.stato);
 
                         Button conferma = (Button) inserimentoBlueBialog.findViewById(R.id.button_conferma_blu);
@@ -343,8 +343,12 @@ public class PrestazioniActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 if (dato_arrivato == true) {
                                     dato_arrivato = false;
+                                    progressBarBluetoooth.setVisibility(View.GONE);
                                     Toast.makeText(v.getContext(), "dati salvati correttamente", Toast.LENGTH_LONG).show();
                                     clientClass.cancel();
+
+                                    //MOSTRA QUI IL VALORE
+                                    dati.clear();
 
                                     inserimentoBlueBialog.cancel();
                                 } else {
@@ -538,7 +542,7 @@ public class PrestazioniActivity extends AppCompatActivity {
         }
     }
 
-    private static class ClientClass extends Thread
+    private  class ClientClass extends Thread
     {
         private BluetoothDevice device;
         private BluetoothSocket socket;
@@ -581,42 +585,50 @@ public class PrestazioniActivity extends AppCompatActivity {
         }
     }
 
-    private static  class SendReceive extends Thread
+    private class SendReceive extends Thread
     {
         private final BluetoothSocket bluetoothSocket;
-        private final InputStream inputStream;
-        private final OutputStream outputStream;
+        ObjectOutputStream outputStream;
+        ObjectInputStream inputStream;
 
         public SendReceive (BluetoothSocket socket)
         {
             bluetoothSocket=socket;
-            InputStream tempIn=null;
-            OutputStream tempOut=null;
-
-            try {
-                tempIn=bluetoothSocket.getInputStream();
-                tempOut=bluetoothSocket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            inputStream=tempIn;
-            outputStream=tempOut;
         }
 
         public void run()
         {
-            byte[] buffer=new byte[1024];
-            int bytes;
 
             while (true)
             {
                 try {
-                    bytes=inputStream.read(buffer);
-                    handler.obtainMessage(STATE_MESSAGE_RECEIVED,bytes,-1,buffer).sendToTarget();
+                    if(inputStream == null ){
+                        inputStream=new ObjectInputStream(bluetoothSocket.getInputStream());
+                    }
+
+                    Object punto =  inputStream.readObject();
+
+                    handler.obtainMessage(STATE_MESSAGE_RECEIVED,punto).sendToTarget();
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
+            }
+        }
+
+
+        public void writeSerialized(Object p){
+
+            try {
+                if(outputStream== null){
+                    outputStream=new  ObjectOutputStream(bluetoothSocket.getOutputStream());
+                }
+
+                outputStream.writeObject(p);
+
+            }catch(Exception e){
+
             }
         }
     }

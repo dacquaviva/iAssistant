@@ -36,7 +36,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,6 +53,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import gruppo_20.iassistant.R;
@@ -58,7 +64,6 @@ import gruppo_20.iassistant.model.Visita;
 
 public class PrestazioniActivity extends AppCompatActivity {
 
-    private static FloatingActionButton fab;
     private static RecyclerView prestazioniList;
     private static android.support.design.bottomappbar.BottomAppBar but;
 
@@ -100,8 +105,7 @@ public class PrestazioniActivity extends AppCompatActivity {
     static final int STATE_MESSAGE_RECEIVED=5;
 
     int REQUEST_ENABLE_BLUETOOTH=1;
-
-    private static final String APP_NAME = "iAssistant";
+    
     private static final UUID MY_UUID=UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66");
     private static boolean dato_arrivato = false;
 
@@ -200,7 +204,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                 }
 
                 assert prestazioniList != null;
-                setupRecyclerView(prestazioniList, visita.getPrestazioni());
+                setupRecyclerView(prestazioniList, visita.getPrestazioni(),visita.getStato());
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -242,8 +246,8 @@ public class PrestazioniActivity extends AppCompatActivity {
 
 
     //definizione del metodo per il riempimento della lista
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni) { //@NonNull specifica che il metodo non potrà mai restituire null
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, itemPrestazioni));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, List<Prestazione> itemPrestazioni, Stato statoVisita) { //@NonNull specifica che il metodo non potrà mai restituire null
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, itemPrestazioni,statoVisita));
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -415,11 +419,13 @@ public class PrestazioniActivity extends AppCompatActivity {
 
         private final PrestazioniActivity mParentActivity;
         private final List<Prestazione> mValues;
+        private final Stato mStatoVisita;
 
 
-        SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazione> items) {
+        SimpleItemRecyclerViewAdapter(PrestazioniActivity parent, List<Prestazione> items, Stato statoVisita) {
             mValues = items;
             mParentActivity = parent;
+            mStatoVisita = statoVisita;
         }
 
         @Override
@@ -442,34 +448,34 @@ public class PrestazioniActivity extends AppCompatActivity {
             holder.mlayoutPrestazine.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    modalitaInserimentoDialog = new Dialog(v.getContext());
-                    modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                    modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
-                    modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
+                    if (!mValues.get(position).isEffectuated() && dataVisita.equals(MainActivity.setCalendarToString(Calendar.getInstance()))){
+                        modalitaInserimentoDialog = new Dialog(v.getContext());
+                        modalitaInserimentoDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        modalitaInserimentoDialog.setContentView(R.layout.modalita_misurazione);
+                        modalitaInserimentoDialog.setTitle("Scelta tipo di misurazione");
 
 
-                    cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
-                    cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
-                    bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                    if(bluetoothAdapter != null) {
+                        cMan = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipManuale);
+                        cBlu = (Chip) modalitaInserimentoDialog.findViewById(R.id.chipBlu);
+                        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        if (bluetoothAdapter != null) {
 
 
-                        cBlu.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                            cBlu.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
 
-                                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                                startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
+                                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                    startActivityForResult(enableIntent, REQUEST_ENABLE_BLUETOOTH);
 
 
-
-                            }
-                        });
-                    }else{
-                        cBlu.setVisibility(View.GONE);
-                        Toast.makeText(v.getContext(),"Il divice non e' dotato di bluetooth",Toast.LENGTH_LONG).show();
-                        cMan.setPadding(5,0,5,0);
-                    }
+                                }
+                            });
+                        } else {
+                            cBlu.setVisibility(View.GONE);
+                            Toast.makeText(v.getContext(), "Il divice non e' dotato di bluetooth", Toast.LENGTH_LONG).show();
+                            cMan.setPadding(5, 0, 5, 0);
+                        }
 
                         cMan.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -489,9 +495,12 @@ public class PrestazioniActivity extends AppCompatActivity {
                                 conferma.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if(dato.getText().toString().equals("")) {
-                                            Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto),Toast.LENGTH_LONG ).show();
-                                        } else{
+                                        if(mStatoVisita.equals(Stato.Pianificato)){
+                                            dbRefVisita.child("stato").setValue(Stato.InCorso);
+                                        }
+                                        if (dato.getText().toString().equals("")) {
+                                            Toast.makeText(PrestazioniActivity.this, mParentActivity.getResources().getString(R.string.risultatoVuoto), Toast.LENGTH_LONG).show();
+                                        } else {
                                             Long currentTime = System.currentTimeMillis();
                                             String stringCurrentTime = currentTime.toString();
                                             stringCurrentTime = (String) stringCurrentTime.subSequence(stringCurrentTime.length() - 7, stringCurrentTime.length());
@@ -500,7 +509,7 @@ public class PrestazioniActivity extends AppCompatActivity {
                                             array.add(entry);
                                             Prestazione mValuesDaSalvare = mValues.get(position);
                                             mValuesDaSalvare.setRisultato(array);
-                                            if (!noteInserite.getText().toString().equals("")){
+                                            if (!noteInserite.getText().toString().equals("")) {
                                                 mValuesDaSalvare.setDatiOpzionali(noteInserite.getText().toString());
                                             }
                                             dbRefVisita.child("prestazioni").child("" + position).setValue(mValuesDaSalvare);
@@ -517,10 +526,42 @@ public class PrestazioniActivity extends AppCompatActivity {
                                 inserimentoDialog.show();
                             }
                         });
-                        modalitaInserimentoDialog.show();
-                    }
+                    modalitaInserimentoDialog.show();
+                    } else if(mValues.get(position).isEffectuated()){
+                        Dialog dialogRisultato =  new Dialog(v.getContext());
+                        dialogRisultato.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialogRisultato.setContentView(R.layout.visualizza_risultato_dialog);
+                        TextView note = (TextView) dialogRisultato.findViewById(R.id.note);
+                        TextView risultatoTextView = (TextView) dialogRisultato.findViewById(R.id.risultato);
+                        LineChart graficoView = (LineChart) dialogRisultato.findViewById(R.id.grafico);
+                        if (mValues.get(position).getRisultato().size()>1){
+                            risultatoTextView.setVisibility(View.GONE);
+                            ArrayList<Entry> risultatiList = mValues.get(position).getRisultato();
+                            LineDataSet lineData = new LineDataSet(risultatiList,"Risultato");
+                            lineData.setLineWidth(2);
+                            lineData.setCircleColor(getResources().getColor(R.color.colorPrimary));
+                            ArrayList<ILineDataSet> iLineDataSet = new ArrayList<>();
+                            iLineDataSet.add(lineData);
+                            LineData data = new LineData(iLineDataSet);
+                            graficoView.setData(data);
+                            Description description = new Description();
+                            description.setEnabled(false);
+                            graficoView.setDescription(description);
+                            graficoView.invalidate();
+                        }else{
+                            graficoView.setVisibility(View.GONE);
+                            Float ris = mValues.get(position).getRisultato().get(0).getX();
+                            risultatoTextView.setText(ris.toString());
 
-            });
+                        }
+                        if(mValues.get(position).getDatiOpzionali() != null && !mValues.get(position).getDatiOpzionali().equals("")){
+                            note.setText(mValues.get(position).getDatiOpzionali());
+                        }
+                        dialogRisultato.show();
+                    }
+                }//fine metodo onClick
+
+            });// fine onClickListener
 
         }
 

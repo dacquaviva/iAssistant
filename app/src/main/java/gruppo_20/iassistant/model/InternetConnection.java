@@ -1,15 +1,14 @@
 package gruppo_20.iassistant.model;
 
-/**
- * Created by angel on 19/09/2018.
- */
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+//classe che verifica lo stato della connessione ad internet.
 public class InternetConnection{
 
+    //Il metodo restituisce True se la connessione ad internet è presente. False se no
     public static boolean haveInternetConnection(Context contesto) {
         boolean haveConnectedWifi = false;
         boolean haveConnectedMobile = false;

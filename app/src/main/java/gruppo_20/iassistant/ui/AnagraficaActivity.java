@@ -16,17 +16,21 @@ import gruppo_20.iassistant.R;
 import gruppo_20.iassistant.model.CartellaClinica;
 import gruppo_20.iassistant.model.Paziente;
 
-
+/*
+Classe che implementa l'activity Anagrafica del Paziente comprendente sia i dati personali sia
+la cartella clinica
+ */
 public class AnagraficaActivity extends AppCompatActivity {
 
     private String idPaziente;
+    //impostiamo i riferimenti al database del ramo pazienti
     private final DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.anagrafica);
-
+        //il riferimento al paziente viene passato tramite intent lanciato dal bottone di PrestazioniActivity
         idPaziente = getIntent().getExtras().getString("idPaziente");
 
         final TextView nomePaziente =(TextView)  findViewById(R.id.anagraficaPaziente_nome);

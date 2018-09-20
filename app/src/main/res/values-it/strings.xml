@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">iAssistant</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="declaresUnavailability">Dichiara indisponibilità</string>
+    <string name="pianifications">Pianificazioni</string>
+    <string name="messages">Notifiche</string>
+    <string name="helpline">Assistenza telefonica</string>
+    <string name="myAccount">Il mio profilo</string>
+    <string name="logOut">Esci</string>
+    <string name="associatedDevices">Dispositivi associati</string>
+    <string name="menu">Menu</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Accedi</string>
+    <string name="action_sign_in_short">Accedi</string>
+    <string name="error_invalid_email">Indirizzo email non corretto</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">Password non corretta</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="visualizza">Visualizza</string>
+    <string name="nessunaPrestazione">Nessuna prestazione</string>
+    <string name="operazioneTerminataConSuccesso">Operazione terminata con successo</string>
+    <string name="problemiDiConnessione">Problemi di connessione</string>
+    <string name="risultatoVuoto">Il risultato non puo essere vuoto</string>
+    <string name="nessunaNota">Nessuna nota</string>
+
+    <plurals name="prestazioni">
+        <item quantity="one">%d prestazione</item>
+        <item quantity="other">%d prestazioni</item>
+    </plurals>
+
+    <string-array name="mesi">
+        <item>Gennaio</item>
+        <item>Febbraio</item>
+        <item>Marzo</item>
+        <item>Aprile</item>
+        <item>Maggio</item>
+        <item>Giugno</item>
+        <item>Luglio</item>
+        <item>Agosto</item>
+        <item>Settembre</item>
+        <item>Ottobre</item>
+        <item>Novembre</item>
+        <item>Dicembre</item>
+    </string-array>
+    <string name="title_activity_misurazioni">MisurazioniActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_anagrafica_paziente">AnagraficaPazienteActivity</string>
+    <string name="termina">Termina</string>
+    <string name="modalit_di_inserimento">Modalità di inserimento</string>
+    <string name="in_ricezione">in ricezione</string>
+    <string name="conferma">Conferma</string>
+    <string name="annulla">Annulla</string>
+    <string name="risultato">Risultato</string>
+    <string name="note">Note</string>
+    <string name="seleziona_dispositivo">Seleziona dispositivo</string>
+    <string name="anagrafica">Anagrafica</string>
+    <string name="nome">Nome:</string>
+    <string name="cognome">Cognome:</string>
+    <string name="codice_fiscale">Codice Fiscale:</string>
+    <string name="luogo_di_nascita">Luogo di Nascita:</string>
+    <string name="data_di_nascita">Data di Nascita:</string>
+    <string name="indirizzo">Indirizzo:</string>
+    <string name="citt_di_residenza">Città di Residenza:</string>
+    <string name="num_telefono">Num. Telefono:</string>
+    <string name="medico_curante">Medico Curante:</string>
+    <string name="cartella_clinica">Cartella Clinica</string>
+    <string name="inizio_raccolta_dati">Inizio raccolta dati:</string>
+    <string name="diagnosi">Diagnosi:</string>
+    <string name="allergie">Allergie:</string>
+    <string name="trattamento_farmacologico">Trattamento Farmacologico:</string>
+    <string name="malattie_concomitanti">Malattie Concomitanti:</string>
+    <string name="iassistant">iAssistant</string>
+    <string name="professione">Professione:</string>
+    <string name="num_di_telefono_operatore">Num. di Telefono:</string>
+    <string name="action_back">action back</string>
+</resources>

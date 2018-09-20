@@ -6,28 +6,30 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="declaresUnavailability">Dichiara indisponibilità</string>
-    <string name="pianifications">Pianificazioni</string>
-    <string name="messages">Notifiche</string>
-    <string name="helpline">Assistenza telefonica</string>
-    <string name="myAccount">Il mio profilo</string>
-    <string name="logOut">Esci</string>
-    <string name="associatedDevices">Dispositivi associati</string>
+    <string name="declaresUnavailability">Declare availability</string>
+    <string name="pianifications">Schedules</string>
+    <string name="messages">Notifications</string>
+    <string name="helpline">Helpline</string>
+    <string name="myAccount">My profile</string>
+    <string name="logOut">Quit</string>
+    <string name="associatedDevices">associated devices</string>
     <string name="menu">Menu</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Accedi</string>
-    <string name="action_sign_in_short">Accedi</string>
-    <string name="error_invalid_email">Indirizzo email non corretto</string>
+    <string name="action_sign_in">Log in</string>
+    <string name="action_sign_in_short">Log in</string>
+    <string name="error_invalid_email">Wrong email address</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">Password non corretta</string>
+    <string name="error_incorrect_password">Wrong password</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="visualizza">Visualizza</string>
-    <string name="nessunaPrestazione">Nessuna prestazione</string>
-    <string name="operazioneTerminataConSuccesso">Operazione terminata con successo</string>
+    <string name="visualizza">Display</string>
+    <string name="nessunaPrestazione">No performance</string>
+    <string name="operazioneTerminataConSuccesso">Operation completed successfully</string>
+    <string name="problemiDiConnessione">Connection problems</string>
+    <string name="risultatoVuoto">The result can not be empty</string>
 
     <plurals name="prestazioni">
         <item quantity="one">%d prestazione</item>
@@ -35,18 +37,18 @@
     </plurals>
 
     <string-array name="mesi">
-        <item>Gennaio</item>
-        <item>Febbraio</item>
-        <item>Marzo</item>
-        <item>Aprile</item>
-        <item>Maggio</item>
-        <item>Giugno</item>
-        <item>Luglio</item>
-        <item>Agosto</item>
-        <item>Settembre</item>
-        <item>Ottobre</item>
-        <item>Novembre</item>
-        <item>Dicembre</item>
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>Dicember</item>
     </string-array>
     <string name="title_activity_misurazioni">MisurazioniActivity</string>
     <string name="title_home">Home</string>
@@ -54,31 +56,32 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_anagrafica_paziente">AnagraficaPazienteActivity</string>
     <string name="termina">Termina</string>
-    <string name="modalit_di_inserimento">Modalità di inserimento</string>
+    <string name="modalit_di_inserimento">Entry mode</string>
     <string name="in_ricezione">in ricezione</string>
-    <string name="conferma">Conferma</string>
-    <string name="annulla">Annulla</string>
-    <string name="risultato">Risultato</string>
+    <string name="conferma">Confirmation</string>
+    <string name="annulla">Cancel</string>
+    <string name="risultato">Result</string>
     <string name="note">Note</string>
-    <string name="seleziona_dispositivo">Seleziona dispositivo</string>
-    <string name="anagrafica">Anagrafica</string>
-    <string name="nome">Nome:</string>
-    <string name="cognome">Cognome:</string>
-    <string name="codice_fiscale">Codice Fiscale:</string>
-    <string name="luogo_di_nascita">Luogo di Nascita:</string>
-    <string name="data_di_nascita">Data di Nascita:</string>
-    <string name="indirizzo">Indirizzo:</string>
-    <string name="citt_di_residenza">Città di Residenza:</string>
-    <string name="num_telefono">Num. Telefono:</string>
-    <string name="medico_curante">Medico Curante:</string>
-    <string name="cartella_clinica">Cartella Clinica</string>
-    <string name="inizio_raccolta_dati">Inizio raccolta dati:</string>
-    <string name="diagnosi">Diagnosi:</string>
-    <string name="allergie">Allergie:</string>
-    <string name="trattamento_farmacologico">Trattamento Farmacologico:</string>
-    <string name="malattie_concomitanti">Malattie Concomitanti:</string>
+    <string name="seleziona_dispositivo">Select device</string>
+    <string name="anagrafica">Personal data</string>
+    <string name="nome">Name:</string>
+    <string name="cognome">Surname:</string>
+    <string name="codice_fiscale">Personal ID:</string>
+    <string name="luogo_di_nascita">Birth place:</string>
+    <string name="data_di_nascita">Date of birth:</string>
+    <string name="indirizzo">Address:</string>
+    <string name="citt_di_residenza">City of residence:</string>
+    <string name="num_telefono">Telefone number:</string>
+    <string name="medico_curante">Personal doctor:</string>
+    <string name="cartella_clinica">Medical records</string>
+    <string name="inizio_raccolta_dati">Start of data collection:</string>
+    <string name="diagnosi">Diagnosis:</string>
+    <string name="allergie">Allergies:</string>
+    <string name="trattamento_farmacologico">Pharmacological treatment:</string>
+    <string name="malattie_concomitanti">Illnesses:</string>
     <string name="iassistant">iAssistant</string>
-    <string name="professione">Professione:</string>
-    <string name="num_di_telefono_operatore">Num. di Telefono:</string>
+    <string name="professione">Profession:</string>
+    <string name="num_di_telefono_operatore">Telephone number:</string>
     <string name="action_back">action back</string>
+    <string name="nessunaNota">Nessuna nota</string>
 </resources>

@@ -46,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
         final TextView appName = (TextView) findViewById(R.id.appName);
         final ConstraintLayout loginLayout = (ConstraintLayout) findViewById(R.id.login_layout);
         final ImageView cuore = (ImageView) findViewById(R.id.cuore);

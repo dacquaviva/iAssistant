@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 import gruppo_20.iassistant.R;
+import gruppo_20.iassistant.model.InternetConnection;
 import gruppo_20.iassistant.model.Operatore;
 import gruppo_20.iassistant.model.Paziente;
 
@@ -51,10 +53,10 @@ public class MainActivity extends AppCompatActivity
     private final DatabaseReference dbRefOperatore = FirebaseDatabase.getInstance().getReference().child("operatori").child(idOperatore);
     private final DatabaseReference dbRefVisite = dbRefOperatore.child("visite");
     private static DatabaseReference dbRefPazienti = FirebaseDatabase.getInstance().getReference().child("pazienti");
-
     private ComplexRecyclerViewAdapter recycleViewLista;
     private String dataSelezionata;
     RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.pianifications));
         setSupportActionBar(toolbar);
 
         Intent service = new Intent(MainActivity.this, NotificaPianificazioni.class);
@@ -233,10 +236,13 @@ public class MainActivity extends AppCompatActivity
 
     private void caricaProssimiTreGiorni(final List<Object> lista, final String dataVisita, final int numGiorni,final int numMaxGiorni){
 
-        dbRefVisite.child(dataVisita).addValueEventListener(new ValueEventListener() {
+        DatabaseReference dbRefVisita = dbRefVisite.child(dataVisita);
+        dbRefVisita.keepSynced(true);
+        dbRefVisita.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Object> listaRiempita =  lista;
+                 List<Object> listaRiempita =  lista;
                 String nextDate=dataVisita;
                 int giorniLettiPieni = numGiorni;
                 int giorniLettiVuoti = numMaxGiorni;
@@ -285,6 +291,8 @@ public class MainActivity extends AppCompatActivity
                         caricaProssimiTreGiorni(listaRiempita,nextDate, giorniLettiPieni,giorniLettiVuoti);
                     }
                 }else{
+                    if(!InternetConnection.haveInternetConnection(MainActivity.this))
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.problemiDiConnessione),Toast.LENGTH_LONG).show();
                     recyclerView = (RecyclerView) findViewById(R.id.item_list);
                     assert recyclerView != null;
                     setupRecyclerView(recyclerView, lista);
@@ -368,6 +376,7 @@ public class MainActivity extends AppCompatActivity
             dbRefPazienti.child(((Visita)items.get(position)).getIdPaziente()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     final Paziente paziente = dataSnapshot.getValue(Paziente.class);
                     visiteHolder.getmNomePaziente().setText(paziente.getCognome() + " " + paziente.getNome());
                     visiteHolder.getmTelefono().setText(paziente.getTelefono());

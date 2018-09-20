@@ -24,54 +24,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/longCalendar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/appBar"
-        android:animateLayoutChanges="true"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <ImageButton
-            android:id="@+id/dataPrecedente"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:focusable="false"
-            android:gravity="center"
-            android:tint="@color/colorPrimary"
-            app:srcCompat="@drawable/arrow_left" />
-
-        <TextView
-            android:id="@+id/dataText"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:fontFamily="@font/sansregular"
-            android:text=""
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
-
-        <ImageButton
-            android:id="@+id/dataSuccessiva"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:tint="@color/colorPrimary"
-            android:focusable="false"
-            app:srcCompat="@drawable/arrow_right" />
-
-    </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_below="@+id/longCalendar"
+        android:layout_below="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
